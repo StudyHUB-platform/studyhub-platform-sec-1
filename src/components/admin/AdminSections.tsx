@@ -89,7 +89,10 @@ export function LibraryAdmin() {
   });
 
   const add = async () => {
-    if (!title.trim()) return toast.error("اكتب عنوان الملف");
+    if (!title.trim()) {
+      toast.error("اكتب عنوان الملف");
+      return;
+    }
     setBusy(true);
     try {
       let url = link.trim();
