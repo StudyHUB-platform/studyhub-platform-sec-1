@@ -96,7 +96,7 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-md">
         <div className="mb-6 flex justify-center">
-          <StudyHubLogo />
+          <StudyHubLogo secretAccess />
         </div>
         <div className="hub-card p-6">
           <Tabs value={tab} onValueChange={setTab}>

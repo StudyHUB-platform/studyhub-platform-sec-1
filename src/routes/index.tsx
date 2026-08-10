@@ -38,7 +38,7 @@ function WelcomeScreen() {
     <div className="min-h-screen bg-background">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(60%_60%_at_50%_0%,var(--gold)/18%,transparent)]" />
       <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 py-14 text-center md:py-20">
-        <StudyHubLogo />
+        <StudyHubLogo secretAccess />
         <p className="mt-8 text-xs font-bold tracking-[0.3em] text-primary uppercase">Welcome</p>
         <h1 className="font-display mt-3 text-4xl leading-tight font-extrabold md:text-6xl">
           أهلاً بك في <span className="text-gradient-gold">Study HUB</span>
