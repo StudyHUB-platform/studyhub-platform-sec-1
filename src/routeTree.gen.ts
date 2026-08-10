@@ -19,6 +19,9 @@ import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as NotesRouteImport } from './routes/notes'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as StatisticsRouteImport } from './routes/statistics'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TeachersRouteImport } from './routes/teachers'
 import { Route as TodoRouteImport } from './routes/todo'
 import { Route as TranslatorRouteImport } from './routes/translator'
@@ -76,6 +79,21 @@ const NotesRoute = NotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatisticsRoute = StatisticsRouteImport.update({
+  id: '/statistics',
+  path: '/statistics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeachersRoute = TeachersRouteImport.update({
   id: '/teachers',
   path: '/teachers',
@@ -118,6 +136,9 @@ export interface FileRoutesByFullPath {
   '/focus': typeof FocusRoute
   '/library': typeof LibraryRoute
   '/notes': typeof NotesRoute
+  '/profile': typeof ProfileRoute
+  '/statistics': typeof StatisticsRoute
+  '/support': typeof SupportRoute
   '/teachers': typeof TeachersRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
@@ -135,6 +156,9 @@ export interface FileRoutesByTo {
   '/focus': typeof FocusRoute
   '/library': typeof LibraryRoute
   '/notes': typeof NotesRoute
+  '/profile': typeof ProfileRoute
+  '/statistics': typeof StatisticsRoute
+  '/support': typeof SupportRoute
   '/teachers': typeof TeachersRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
@@ -154,6 +178,9 @@ export interface FileRoutesById {
   '/focus': typeof FocusRoute
   '/library': typeof LibraryRoute
   '/notes': typeof NotesRoute
+  '/profile': typeof ProfileRoute
+  '/statistics': typeof StatisticsRoute
+  '/support': typeof SupportRoute
   '/teachers': typeof TeachersRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
@@ -174,6 +201,9 @@ export interface FileRouteTypes {
     | '/focus'
     | '/library'
     | '/notes'
+    | '/profile'
+    | '/statistics'
+    | '/support'
     | '/teachers'
     | '/todo'
     | '/translator'
@@ -191,6 +221,9 @@ export interface FileRouteTypes {
     | '/focus'
     | '/library'
     | '/notes'
+    | '/profile'
+    | '/statistics'
+    | '/support'
     | '/teachers'
     | '/todo'
     | '/translator'
@@ -209,6 +242,9 @@ export interface FileRouteTypes {
     | '/focus'
     | '/library'
     | '/notes'
+    | '/profile'
+    | '/statistics'
+    | '/support'
     | '/teachers'
     | '/todo'
     | '/translator'
@@ -228,6 +264,9 @@ export interface RootRouteChildren {
   FocusRoute: typeof FocusRoute
   LibraryRoute: typeof LibraryRoute
   NotesRoute: typeof NotesRoute
+  ProfileRoute: typeof ProfileRoute
+  StatisticsRoute: typeof StatisticsRoute
+  SupportRoute: typeof SupportRoute
   TeachersRoute: typeof TeachersRoute
   TodoRoute: typeof TodoRoute
   TranslatorRoute: typeof TranslatorRoute
@@ -306,6 +345,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/statistics': {
+      id: '/statistics'
+      path: '/statistics'
+      fullPath: '/statistics'
+      preLoaderRoute: typeof StatisticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/teachers': {
       id: '/teachers'
       path: '/teachers'
@@ -374,6 +434,9 @@ const rootRouteChildren: RootRouteChildren = {
   FocusRoute: FocusRoute,
   LibraryRoute: LibraryRoute,
   NotesRoute: NotesRoute,
+  ProfileRoute: ProfileRoute,
+  StatisticsRoute: StatisticsRoute,
+  SupportRoute: SupportRoute,
   TeachersRoute: TeachersRoute,
   TodoRoute: TodoRoute,
   TranslatorRoute: TranslatorRoute,
