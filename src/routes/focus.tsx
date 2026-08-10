@@ -35,7 +35,7 @@ function FocusPage() {
       const { error } = await supabase.from("study_sessions").insert({
         user_id: user!.id,
         minutes: mins,
-        subject: subject || null,
+        mode: subject || "focus",
       });
       if (error) throw error;
     },
@@ -47,7 +47,7 @@ function FocusPage() {
     queryFn: async () => {
       const { data } = await supabase
         .from("study_sessions")
-        .select("minutes, subject, created_at")
+        .select("minutes, mode, created_at")
         .order("created_at", { ascending: false })
         .limit(10);
       return data ?? [];
@@ -128,7 +128,7 @@ function FocusPage() {
         <div className="mt-5 space-y-2">
           {sessions?.map((s, i) => (
             <div key={i} className="hub-card flex items-center justify-between p-3 text-sm">
-              <span className="font-semibold">{s.subject ?? "جلسة دراسة"}</span>
+              <span className="font-semibold">{s.mode || "جلسة دراسة"}</span>
               <span className="text-muted-foreground">
                 {s.minutes} د · {new Date(s.created_at).toLocaleDateString("ar-EG")}
               </span>
