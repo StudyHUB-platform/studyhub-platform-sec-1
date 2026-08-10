@@ -17,6 +17,7 @@ import { Route as FocusRouteImport } from './routes/focus'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as TodoRouteImport } from './routes/todo'
 import { Route as TranslatorRouteImport } from './routes/translator'
+import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const TranslatorRoute = TranslatorRouteImport.update({
   path: '/translator',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExamsIndexRoute = ExamsIndexRouteImport.update({
+  id: '/exams/',
+  path: '/exams/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/exams/': typeof ExamsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/exams': typeof ExamsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/exams/': typeof ExamsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/todo'
     | '/translator'
+    | '/exams/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/todo'
     | '/translator'
+    | '/exams'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/todo'
     | '/translator'
+    | '/exams/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   TodoRoute: typeof TodoRoute
   TranslatorRoute: typeof TranslatorRoute
+  ExamsIndexRoute: typeof ExamsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TranslatorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/exams/': {
+      id: '/exams/'
+      path: '/exams'
+      fullPath: '/exams/'
+      preLoaderRoute: typeof ExamsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   TodoRoute: TodoRoute,
   TranslatorRoute: TranslatorRoute,
+  ExamsIndexRoute: ExamsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

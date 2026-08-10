@@ -8,7 +8,7 @@ import { SUBJECT_EMOJI } from "@/lib/hub";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export const Route = createFileRoute("/exams")({
+export const Route = createFileRoute("/exams/")({
   head: () => ({
     meta: [
       { title: "الامتحانات — Study HUB Exams" },
