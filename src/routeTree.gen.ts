@@ -10,33 +10,280 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AiRouteImport } from './routes/ai'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CalculatorRouteImport } from './routes/calculator'
+import { Route as CommunityRouteImport } from './routes/community'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ExamsRouteImport } from './routes/exams'
+import { Route as FocusRouteImport } from './routes/focus'
+import { Route as LibraryRouteImport } from './routes/library'
+import { Route as NotesRouteImport } from './routes/notes'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as StatisticsRouteImport } from './routes/statistics'
+import { Route as SupportRouteImport } from './routes/support'
+import { Route as TeachersRouteImport } from './routes/teachers'
+import { Route as TodoRouteImport } from './routes/todo'
+import { Route as TranslatorRouteImport } from './routes/translator'
+import { Route as UpdatesRouteImport } from './routes/updates'
+import { Route as ExamsIndexRouteImport } from './routes/exams.index'
+import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiRoute = AiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculatorRoute = CalculatorRouteImport.update({
+  id: '/calculator',
+  path: '/calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamsRoute = ExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FocusRoute = FocusRouteImport.update({
+  id: '/focus',
+  path: '/focus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StatisticsRoute = StatisticsRouteImport.update({
+  id: '/statistics',
+  path: '/statistics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeachersRoute = TeachersRouteImport.update({
+  id: '/teachers',
+  path: '/teachers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TodoRoute = TodoRouteImport.update({
+  id: '/todo',
+  path: '/todo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TranslatorRoute = TranslatorRouteImport.update({
+  id: '/translator',
+  path: '/translator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdatesRoute = UpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamsIndexRoute = ExamsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ExamsRoute,
+} as any)
+const ExamsExamIdRoute = ExamsExamIdRouteImport.update({
+  id: '/$examId',
+  path: '/$examId',
+  getParentRoute: () => ExamsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ai': typeof AiRoute
+  '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/community': typeof CommunityRoute
+  '/dashboard': typeof DashboardRoute
+  '/exams': typeof ExamsRouteWithChildren
+  '/focus': typeof FocusRoute
+  '/library': typeof LibraryRoute
+  '/notes': typeof NotesRoute
+  '/profile': typeof ProfileRoute
+  '/statistics': typeof StatisticsRoute
+  '/support': typeof SupportRoute
+  '/teachers': typeof TeachersRoute
+  '/todo': typeof TodoRoute
+  '/translator': typeof TranslatorRoute
+  '/updates': typeof UpdatesRoute
+  '/exams/$examId': typeof ExamsExamIdRoute
+  '/exams/': typeof ExamsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ai': typeof AiRoute
+  '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/community': typeof CommunityRoute
+  '/dashboard': typeof DashboardRoute
+  '/focus': typeof FocusRoute
+  '/library': typeof LibraryRoute
+  '/notes': typeof NotesRoute
+  '/profile': typeof ProfileRoute
+  '/statistics': typeof StatisticsRoute
+  '/support': typeof SupportRoute
+  '/teachers': typeof TeachersRoute
+  '/todo': typeof TodoRoute
+  '/translator': typeof TranslatorRoute
+  '/updates': typeof UpdatesRoute
+  '/exams/$examId': typeof ExamsExamIdRoute
+  '/exams': typeof ExamsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/ai': typeof AiRoute
+  '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/community': typeof CommunityRoute
+  '/dashboard': typeof DashboardRoute
+  '/exams': typeof ExamsRouteWithChildren
+  '/focus': typeof FocusRoute
+  '/library': typeof LibraryRoute
+  '/notes': typeof NotesRoute
+  '/profile': typeof ProfileRoute
+  '/statistics': typeof StatisticsRoute
+  '/support': typeof SupportRoute
+  '/teachers': typeof TeachersRoute
+  '/todo': typeof TodoRoute
+  '/translator': typeof TranslatorRoute
+  '/updates': typeof UpdatesRoute
+  '/exams/$examId': typeof ExamsExamIdRoute
+  '/exams/': typeof ExamsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/ai'
+    | '/auth'
+    | '/calculator'
+    | '/community'
+    | '/dashboard'
+    | '/exams'
+    | '/focus'
+    | '/library'
+    | '/notes'
+    | '/profile'
+    | '/statistics'
+    | '/support'
+    | '/teachers'
+    | '/todo'
+    | '/translator'
+    | '/updates'
+    | '/exams/$examId'
+    | '/exams/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/ai'
+    | '/auth'
+    | '/calculator'
+    | '/community'
+    | '/dashboard'
+    | '/focus'
+    | '/library'
+    | '/notes'
+    | '/profile'
+    | '/statistics'
+    | '/support'
+    | '/teachers'
+    | '/todo'
+    | '/translator'
+    | '/updates'
+    | '/exams/$examId'
+    | '/exams'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/ai'
+    | '/auth'
+    | '/calculator'
+    | '/community'
+    | '/dashboard'
+    | '/exams'
+    | '/focus'
+    | '/library'
+    | '/notes'
+    | '/profile'
+    | '/statistics'
+    | '/support'
+    | '/teachers'
+    | '/todo'
+    | '/translator'
+    | '/updates'
+    | '/exams/$examId'
+    | '/exams/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  AiRoute: typeof AiRoute
+  AuthRoute: typeof AuthRoute
+  CalculatorRoute: typeof CalculatorRoute
+  CommunityRoute: typeof CommunityRoute
+  DashboardRoute: typeof DashboardRoute
+  ExamsRoute: typeof ExamsRouteWithChildren
+  FocusRoute: typeof FocusRoute
+  LibraryRoute: typeof LibraryRoute
+  NotesRoute: typeof NotesRoute
+  ProfileRoute: typeof ProfileRoute
+  StatisticsRoute: typeof StatisticsRoute
+  SupportRoute: typeof SupportRoute
+  TeachersRoute: typeof TeachersRoute
+  TodoRoute: typeof TodoRoute
+  TranslatorRoute: typeof TranslatorRoute
+  UpdatesRoute: typeof UpdatesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +295,174 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai': {
+      id: '/ai'
+      path: '/ai'
+      fullPath: '/ai'
+      preLoaderRoute: typeof AiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculator': {
+      id: '/calculator'
+      path: '/calculator'
+      fullPath: '/calculator'
+      preLoaderRoute: typeof CalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exams': {
+      id: '/exams'
+      path: '/exams'
+      fullPath: '/exams'
+      preLoaderRoute: typeof ExamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/focus': {
+      id: '/focus'
+      path: '/focus'
+      fullPath: '/focus'
+      preLoaderRoute: typeof FocusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/statistics': {
+      id: '/statistics'
+      path: '/statistics'
+      fullPath: '/statistics'
+      preLoaderRoute: typeof StatisticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teachers': {
+      id: '/teachers'
+      path: '/teachers'
+      fullPath: '/teachers'
+      preLoaderRoute: typeof TeachersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/todo': {
+      id: '/todo'
+      path: '/todo'
+      fullPath: '/todo'
+      preLoaderRoute: typeof TodoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/translator': {
+      id: '/translator'
+      path: '/translator'
+      fullPath: '/translator'
+      preLoaderRoute: typeof TranslatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/updates': {
+      id: '/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof UpdatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exams/': {
+      id: '/exams/'
+      path: '/'
+      fullPath: '/exams/'
+      preLoaderRoute: typeof ExamsIndexRouteImport
+      parentRoute: typeof ExamsRoute
+    }
+    '/exams/$examId': {
+      id: '/exams/$examId'
+      path: '/$examId'
+      fullPath: '/exams/$examId'
+      preLoaderRoute: typeof ExamsExamIdRouteImport
+      parentRoute: typeof ExamsRoute
+    }
   }
 }
 
+interface ExamsRouteChildren {
+  ExamsExamIdRoute: typeof ExamsExamIdRoute
+  ExamsIndexRoute: typeof ExamsIndexRoute
+}
+
+const ExamsRouteChildren: ExamsRouteChildren = {
+  ExamsExamIdRoute: ExamsExamIdRoute,
+  ExamsIndexRoute: ExamsIndexRoute,
+}
+
+const ExamsRouteWithChildren = ExamsRoute._addFileChildren(ExamsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  AiRoute: AiRoute,
+  AuthRoute: AuthRoute,
+  CalculatorRoute: CalculatorRoute,
+  CommunityRoute: CommunityRoute,
+  DashboardRoute: DashboardRoute,
+  ExamsRoute: ExamsRouteWithChildren,
+  FocusRoute: FocusRoute,
+  LibraryRoute: LibraryRoute,
+  NotesRoute: NotesRoute,
+  ProfileRoute: ProfileRoute,
+  StatisticsRoute: StatisticsRoute,
+  SupportRoute: SupportRoute,
+  TeachersRoute: TeachersRoute,
+  TodoRoute: TodoRoute,
+  TranslatorRoute: TranslatorRoute,
+  UpdatesRoute: UpdatesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
