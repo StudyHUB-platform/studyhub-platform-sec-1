@@ -12,12 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AiRouteImport } from './routes/ai'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CalculatorRouteImport } from './routes/calculator'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as FocusRouteImport } from './routes/focus'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as NotesRouteImport } from './routes/notes'
+import { Route as TeachersRouteImport } from './routes/teachers'
 import { Route as TodoRouteImport } from './routes/todo'
 import { Route as TranslatorRouteImport } from './routes/translator'
+import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
 
@@ -34,6 +39,16 @@ const AiRoute = AiRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculatorRoute = CalculatorRouteImport.update({
+  id: '/calculator',
+  path: '/calculator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -56,6 +71,16 @@ const LibraryRoute = LibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotesRoute = NotesRouteImport.update({
+  id: '/notes',
+  path: '/notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeachersRoute = TeachersRouteImport.update({
+  id: '/teachers',
+  path: '/teachers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TodoRoute = TodoRouteImport.update({
   id: '/todo',
   path: '/todo',
@@ -64,6 +89,11 @@ const TodoRoute = TodoRouteImport.update({
 const TranslatorRoute = TranslatorRouteImport.update({
   id: '/translator',
   path: '/translator',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdatesRoute = UpdatesRouteImport.update({
+  id: '/updates',
+  path: '/updates',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExamsIndexRoute = ExamsIndexRouteImport.update({
@@ -81,12 +111,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai': typeof AiRoute
   '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/exams': typeof ExamsRouteWithChildren
   '/focus': typeof FocusRoute
   '/library': typeof LibraryRoute
+  '/notes': typeof NotesRoute
+  '/teachers': typeof TeachersRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
 }
@@ -94,11 +129,16 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai': typeof AiRoute
   '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/focus': typeof FocusRoute
   '/library': typeof LibraryRoute
+  '/notes': typeof NotesRoute
+  '/teachers': typeof TeachersRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams': typeof ExamsIndexRoute
 }
@@ -107,12 +147,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ai': typeof AiRoute
   '/auth': typeof AuthRoute
+  '/calculator': typeof CalculatorRoute
+  '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/exams': typeof ExamsRouteWithChildren
   '/focus': typeof FocusRoute
   '/library': typeof LibraryRoute
+  '/notes': typeof NotesRoute
+  '/teachers': typeof TeachersRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
 }
@@ -122,12 +167,17 @@ export interface FileRouteTypes {
     | '/'
     | '/ai'
     | '/auth'
+    | '/calculator'
+    | '/community'
     | '/dashboard'
     | '/exams'
     | '/focus'
     | '/library'
+    | '/notes'
+    | '/teachers'
     | '/todo'
     | '/translator'
+    | '/updates'
     | '/exams/$examId'
     | '/exams/'
   fileRoutesByTo: FileRoutesByTo
@@ -135,11 +185,16 @@ export interface FileRouteTypes {
     | '/'
     | '/ai'
     | '/auth'
+    | '/calculator'
+    | '/community'
     | '/dashboard'
     | '/focus'
     | '/library'
+    | '/notes'
+    | '/teachers'
     | '/todo'
     | '/translator'
+    | '/updates'
     | '/exams/$examId'
     | '/exams'
   id:
@@ -147,12 +202,17 @@ export interface FileRouteTypes {
     | '/'
     | '/ai'
     | '/auth'
+    | '/calculator'
+    | '/community'
     | '/dashboard'
     | '/exams'
     | '/focus'
     | '/library'
+    | '/notes'
+    | '/teachers'
     | '/todo'
     | '/translator'
+    | '/updates'
     | '/exams/$examId'
     | '/exams/'
   fileRoutesById: FileRoutesById
@@ -161,12 +221,17 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiRoute: typeof AiRoute
   AuthRoute: typeof AuthRoute
+  CalculatorRoute: typeof CalculatorRoute
+  CommunityRoute: typeof CommunityRoute
   DashboardRoute: typeof DashboardRoute
   ExamsRoute: typeof ExamsRouteWithChildren
   FocusRoute: typeof FocusRoute
   LibraryRoute: typeof LibraryRoute
+  NotesRoute: typeof NotesRoute
+  TeachersRoute: typeof TeachersRoute
   TodoRoute: typeof TodoRoute
   TranslatorRoute: typeof TranslatorRoute
+  UpdatesRoute: typeof UpdatesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -190,6 +255,20 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculator': {
+      id: '/calculator'
+      path: '/calculator'
+      fullPath: '/calculator'
+      preLoaderRoute: typeof CalculatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -220,6 +299,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notes': {
+      id: '/notes'
+      path: '/notes'
+      fullPath: '/notes'
+      preLoaderRoute: typeof NotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/teachers': {
+      id: '/teachers'
+      path: '/teachers'
+      fullPath: '/teachers'
+      preLoaderRoute: typeof TeachersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/todo': {
       id: '/todo'
       path: '/todo'
@@ -232,6 +325,13 @@ declare module '@tanstack/react-router' {
       path: '/translator'
       fullPath: '/translator'
       preLoaderRoute: typeof TranslatorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/updates': {
+      id: '/updates'
+      path: '/updates'
+      fullPath: '/updates'
+      preLoaderRoute: typeof UpdatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exams/': {
@@ -267,12 +367,17 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiRoute: AiRoute,
   AuthRoute: AuthRoute,
+  CalculatorRoute: CalculatorRoute,
+  CommunityRoute: CommunityRoute,
   DashboardRoute: DashboardRoute,
   ExamsRoute: ExamsRouteWithChildren,
   FocusRoute: FocusRoute,
   LibraryRoute: LibraryRoute,
+  NotesRoute: NotesRoute,
+  TeachersRoute: TeachersRoute,
   TodoRoute: TodoRoute,
   TranslatorRoute: TranslatorRoute,
+  UpdatesRoute: UpdatesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
