@@ -19,6 +19,7 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as TodoRouteImport } from './routes/todo'
 import { Route as TranslatorRouteImport } from './routes/translator'
 import { Route as ExamsIndexRouteImport } from './routes/exams.index'
+import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +71,11 @@ const ExamsIndexRoute = ExamsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ExamsRoute,
 } as any)
+const ExamsExamIdRoute = ExamsExamIdRouteImport.update({
+  id: '/$examId',
+  path: '/$examId',
+  getParentRoute: () => ExamsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/exams/$examId': typeof ExamsExamIdRoute
   '/exams': typeof ExamsIndexRoute
 }
 export interface FileRoutesById {
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
+  '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
 }
 export interface FileRouteTypes {
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/todo'
     | '/translator'
+    | '/exams/$examId'
     | '/exams/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/todo'
     | '/translator'
+    | '/exams/$examId'
     | '/exams'
   id:
     | '__root__'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/todo'
     | '/translator'
+    | '/exams/$examId'
     | '/exams/'
   fileRoutesById: FileRoutesById
 }
@@ -229,14 +241,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExamsIndexRouteImport
       parentRoute: typeof ExamsRoute
     }
+    '/exams/$examId': {
+      id: '/exams/$examId'
+      path: '/$examId'
+      fullPath: '/exams/$examId'
+      preLoaderRoute: typeof ExamsExamIdRouteImport
+      parentRoute: typeof ExamsRoute
+    }
   }
 }
 
 interface ExamsRouteChildren {
+  ExamsExamIdRoute: typeof ExamsExamIdRoute
   ExamsIndexRoute: typeof ExamsIndexRoute
 }
 
 const ExamsRouteChildren: ExamsRouteChildren = {
+  ExamsExamIdRoute: ExamsExamIdRoute,
   ExamsIndexRoute: ExamsIndexRoute,
 }
 
