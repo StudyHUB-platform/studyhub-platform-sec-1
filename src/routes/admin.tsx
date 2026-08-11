@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { ShieldAlert } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
+import { ADMIN_UNLOCK_KEY } from "@/components/StudyHubLogo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AnnouncementsAdmin,
@@ -27,15 +29,19 @@ export const Route = createFileRoute("/admin")({
 
 function AdminPage() {
   const { isAdmin, loading } = useAuth();
+  const [unlocked, setUnlocked] = useState(false);
+  useEffect(() => {
+    setUnlocked(sessionStorage.getItem(ADMIN_UNLOCK_KEY) === "1");
+  }, []);
 
-  if (!loading && !isAdmin) {
+  if (!loading && !isAdmin && !unlocked) {
     return (
       <AppShell title="🔐 Admin Panel">
         <div className="hub-card mx-auto max-w-md p-8 text-center">
           <ShieldAlert className="mx-auto size-10 text-destructive" />
           <p className="font-display mt-3 text-lg font-bold">غير مسموح بالدخول</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            هذه الصفحة للأدمن فقط. لو أنت الأدمن، سجل الدخول بحساب الأدمن.
+            هذه الصفحة للأدمن فقط. اضغط على اللوجو 10 مرات واكتب كلمة سر الأدمن.
           </p>
         </div>
       </AppShell>
