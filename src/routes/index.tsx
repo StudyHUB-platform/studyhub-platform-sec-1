@@ -72,7 +72,7 @@ function WelcomeScreen() {
         </div>
 
         <footer className="mt-16 text-xs text-muted-foreground">
-          © All rights reserved 2024 Study HUB | Developed by Ahmed Shaaban &amp; Retaj Mohamed
+          جميع الحقوق محفوظة © 2027 لتطبيق <span className="font-bold">Study HUB</span> — تم التطوير بواسطة Ahmed Shaaban &amp; Retaj Mohamed
         </footer>
       </div>
     </div>
