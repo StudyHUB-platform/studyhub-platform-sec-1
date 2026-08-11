@@ -133,7 +133,6 @@ function Dashboard() {
       {/* Feature cards */}
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {FEATURES.map((f) => {
-          const Icon = f.icon;
           return (
             <Link
               key={f.to}
@@ -153,7 +152,6 @@ function Dashboard() {
               <span className="grid size-8 shrink-0 place-items-center self-end rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5">
                 <ArrowRight className="size-4" />
               </span>
-              <Icon className="hidden" />
             </Link>
           );
         })}
