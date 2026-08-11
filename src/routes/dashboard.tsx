@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Lightbulb, Megaphone } from "lucide-react";
+import { ArrowRight, CheckCircle2, Clock, Lightbulb, Megaphone } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { FEATURES } from "@/lib/hub";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -49,48 +50,110 @@ function Dashboard() {
     },
   });
 
+  const { data: todayMinutes } = useQuery({
+    queryKey: ["dashboard", "focus-today"],
+    queryFn: async () => {
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      const { data } = await supabase
+        .from("study_sessions")
+        .select("minutes, created_at")
+        .gte("created_at", start.toISOString());
+      return (data ?? []).reduce((a, s) => a + (s.minutes ?? 0), 0);
+    },
+  });
+
+  const { data: tasks } = useQuery({
+    queryKey: ["dashboard", "todos"],
+    queryFn: async () => {
+      const { data } = await supabase.from("todos").select("id, is_done");
+      return data ?? [];
+    },
+  });
+
+  const done = (tasks ?? []).filter((t) => t.is_done).length;
+  const total = tasks?.length ?? 0;
+  const hours = String(Math.floor((todayMinutes ?? 0) / 60)).padStart(2, "0");
+  const mins = String((todayMinutes ?? 0) % 60).padStart(2, "0");
+
   return (
     <AppShell
-      title={`أهلاً ${profile?.full_name ?? "بك"} 👋`}
-      subtitle="اختار القسم اللي عايز تبدأ بيه من Study HUB"
+      title={`Welcome back, ${profile?.full_name ?? "Student"}! 👋`}
+      subtitle="من دواعي سرورنا نراك مرة أخرى في Study HUB"
     >
-      <section className="gradient-gold shadow-gold mb-6 rounded-2xl p-5 text-primary-foreground">
-        <p className="flex items-center gap-2 text-xs font-extrabold tracking-widest uppercase">
-          <Lightbulb className="size-4" /> Tip of the day
-        </p>
-        <h2 className="font-display mt-2 text-xl font-extrabold">
-          {tip?.title ?? "نصيحة اليوم قادمة قريباً"}
-        </h2>
-        <p className="mt-1 text-sm font-medium opacity-90">
-          {tip?.content ?? "الأدمن لسه مضافش نصيحة النهاردة — استعد وابدأ بمهامك."}
-        </p>
+      {/* Stats */}
+      <section className="mb-6 grid gap-3 sm:grid-cols-2">
+        <div className="tone-card tone-blue flex items-center justify-between gap-3 p-5">
+          <div className="min-w-0">
+            <p className="text-xs font-bold opacity-80">وقت المذاكرة اليوم</p>
+            <p className="font-display mt-1 text-3xl font-extrabold tabular-nums">
+              {hours}:{mins}:00
+            </p>
+            <p className="mt-1 text-xs font-bold text-gold">
+              {todayMinutes ? `${todayMinutes} دقيقة مسجلة` : "لا يوجد وقت مسجل بعد"}
+            </p>
+          </div>
+          <span className="grid size-14 shrink-0 place-items-center rounded-full bg-white/12">
+            <Clock className="size-7 text-gold" />
+          </span>
+        </div>
+
+        <div className="gradient-gold shadow-gold flex items-center justify-between gap-3 rounded-xl p-5 text-primary-foreground">
+          <div className="min-w-0">
+            <p className="text-xs font-bold opacity-80">المهام المكتملة</p>
+            <p className="font-display mt-1 text-3xl font-extrabold tabular-nums">
+              {done} / {total}
+            </p>
+            <p className="mt-1 text-xs font-bold opacity-80">
+              {total ? "استمر، أنت على الطريق الصحيح" : "لا توجد مهام بعد"}
+            </p>
+          </div>
+          <span className="grid size-14 shrink-0 place-items-center rounded-full bg-white/25">
+            <CheckCircle2 className="size-7" />
+          </span>
+        </div>
       </section>
 
-      <section className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
-        {FEATURES.map((f, i) => {
+      {/* Tip of the day */}
+      <section className="gradient-gold shadow-gold mb-6 flex items-start gap-4 rounded-2xl p-5 text-primary-foreground">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-white/25">
+          <Lightbulb className="size-6" />
+        </span>
+        <div className="min-w-0">
+          <p className="text-[11px] font-extrabold tracking-widest uppercase opacity-80">Tip of the day</p>
+          <h2 className="font-display mt-1 text-xl font-extrabold">
+            {tip?.title ?? "نصيحة اليوم قادمة قريباً"}
+          </h2>
+          <p className="mt-1 text-sm font-medium opacity-90">
+            {tip?.content ?? "الأدمن لسه مضافش نصيحة النهاردة — استعد وابدأ بمهامك."}
+          </p>
+        </div>
+      </section>
+
+      {/* Feature cards */}
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {FEATURES.map((f) => {
           const Icon = f.icon;
-          const gold = i % 3 === 0;
           return (
             <Link
               key={f.to}
               to={f.to}
-              className={
-                gold
-                  ? "shadow-gold rounded-2xl border border-primary/30 bg-primary/12 p-4 transition-transform hover:-translate-y-0.5"
-                  : "hub-card p-4 transition-transform hover:-translate-y-0.5"
-              }
+              className={cn(
+                "tone-card group flex items-start gap-3 p-5 transition-transform hover:-translate-y-1",
+                f.tone,
+              )}
             >
-              <span
-                className={
-                  gold
-                    ? "gradient-gold flex size-10 items-center justify-center rounded-xl text-primary-foreground"
-                    : "flex size-10 items-center justify-center rounded-xl bg-accent text-accent-foreground"
-                }
-              >
-                <Icon className="size-5" />
+              <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-white/15 text-2xl">
+                {f.emoji}
               </span>
-              <p className="font-display mt-3 text-sm font-bold">{f.label}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">{f.labelAr}</p>
+              <div className="min-w-0 flex-1">
+                <p className="font-display truncate text-base font-extrabold">{f.label}</p>
+                <p className="mt-0.5 text-xs opacity-85">{f.labelAr}</p>
+              </div>
+              <span className="grid size-8 shrink-0 place-items-center self-end rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5">
+                <ArrowRight className="size-4" />
+              </span>
+              <Icon className="hidden" />
             </Link>
           );
         })}
