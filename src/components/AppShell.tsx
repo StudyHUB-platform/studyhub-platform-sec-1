@@ -174,7 +174,7 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar p-4 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar p-4 text-sidebar-foreground lg:flex">
         <StudyHubLogo className="mb-6 px-1" />
         <div className="flex-1 overflow-y-auto pr-1">
           <NavLinks />
@@ -194,7 +194,7 @@ export function AppShell({
             className="absolute inset-0 bg-black/60"
             onClick={() => setOpen(false)}
           />
-          <div className="relative h-full w-72 overflow-y-auto bg-sidebar p-4">
+          <div className="relative h-full w-72 overflow-y-auto bg-sidebar p-4 text-sidebar-foreground">
             <div className="mb-6 flex items-center justify-between">
               <StudyHubLogo />
               <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>

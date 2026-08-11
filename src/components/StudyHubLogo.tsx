@@ -71,7 +71,7 @@ export function StudyHubLogo({
         {!compact && (
           <span className="font-display text-left text-lg leading-tight font-extrabold tracking-tight">
             <span className="text-gradient-gold">STUDY</span>{" "}
-            <span className="text-sidebar-foreground">HUB</span>
+            <span className="text-current">HUB</span>
           </span>
         )}
       </button>
