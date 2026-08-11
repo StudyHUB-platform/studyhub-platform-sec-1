@@ -122,7 +122,7 @@ function LibraryPage() {
 
   return (
     <AppShell title="📚 Study HUB Library" subtitle="فلتر بالقسم والمادة ونوع الملف، أو ابحث مباشرة">
-      <div className="hub-card mb-5 space-y-4 p-4">
+      <section className="hub-card mb-4 p-4">
         <div className="relative">
           <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -132,57 +132,60 @@ function LibraryPage() {
             className="pl-9"
           />
         </div>
+      </section>
 
-        <div>
-          <p className="mb-2 text-xs font-bold text-muted-foreground">📁 Categories</p>
-          <div className="flex flex-wrap gap-2">
-            <Chip active={!category} onClick={() => setCategory(null)}>
-              الكل
+      <section className="hub-card mb-4 p-4">
+        <h2 className="font-display mb-3 text-sm font-extrabold">📁 الأقسام — Categories</h2>
+        <div className="flex flex-wrap gap-2">
+          <Chip active={!category} onClick={() => setCategory(null)}>
+            الكل
+          </Chip>
+          {LIBRARY_CATEGORIES.map((c) => (
+            <Chip key={c} active={category === c} onClick={() => setCategory(c)}>
+              {LIBRARY_CATEGORY_LABELS[c]}
             </Chip>
-            {LIBRARY_CATEGORIES.map((c) => (
-              <Chip key={c} active={category === c} onClick={() => setCategory(c)}>
-                {LIBRARY_CATEGORY_LABELS[c]}
-              </Chip>
-            ))}
-          </div>
+          ))}
         </div>
+      </section>
 
-        <div>
-          <p className="mb-2 text-xs font-bold text-muted-foreground">📚 Core Subjects</p>
-          <div className="flex flex-wrap gap-2">
-            <Chip active={!subject} onClick={() => setSubject(null)}>
-              الكل
+      <section className="hub-card mb-4 p-4">
+        <h2 className="font-display mb-3 text-sm font-extrabold">📚 المواد الأساسية — Core Subjects</h2>
+        <div className="flex flex-wrap gap-2">
+          <Chip active={!subject} onClick={() => setSubject(null)}>
+            الكل
+          </Chip>
+          {CORE_SUBJECTS.map((s) => (
+            <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>
+              {SUBJECT_EMOJI[s]} {s}
             </Chip>
-            {CORE_SUBJECTS.map((s) => (
-              <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>
-                {SUBJECT_EMOJI[s]} {s}
-              </Chip>
-            ))}
-          </div>
-          <p className="mt-3 mb-2 text-xs font-bold text-muted-foreground">📚 Other Subjects</p>
-          <div className="flex flex-wrap gap-2">
-            {OTHER_SUBJECTS.map((s) => (
-              <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>
-                {SUBJECT_EMOJI[s]} {s}
-              </Chip>
-            ))}
-          </div>
+          ))}
         </div>
+      </section>
 
-        <div>
-          <p className="mb-2 text-xs font-bold text-muted-foreground">📄 File Types</p>
-          <div className="flex flex-wrap gap-2">
-            <Chip active={!fileType} onClick={() => setFileType(null)}>
-              الكل
+      <section className="hub-card mb-4 p-4">
+        <h2 className="font-display mb-3 text-sm font-extrabold">🧩 مواد أخرى — Other Subjects</h2>
+        <div className="flex flex-wrap gap-2">
+          {OTHER_SUBJECTS.map((s) => (
+            <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>
+              {SUBJECT_EMOJI[s]} {s}
             </Chip>
-            {FILE_TYPES.map((t) => (
-              <Chip key={t} active={fileType === t} onClick={() => setFileType(t)}>
-                {FILE_TYPE_EMOJI[t]} {t}
-              </Chip>
-            ))}
-          </div>
+          ))}
         </div>
-      </div>
+      </section>
+
+      <section className="hub-card mb-5 p-4">
+        <h2 className="font-display mb-3 text-sm font-extrabold">📄 نوع الملف — File Types</h2>
+        <div className="flex flex-wrap gap-2">
+          <Chip active={!fileType} onClick={() => setFileType(null)}>
+            الكل
+          </Chip>
+          {FILE_TYPES.map((t) => (
+            <Chip key={t} active={fileType === t} onClick={() => setFileType(t)}>
+              {FILE_TYPE_EMOJI[t]} {t}
+            </Chip>
+          ))}
+        </div>
+      </section>
 
       {isLoading && <p className="text-sm text-muted-foreground">جاري التحميل…</p>}
       {!isLoading && !items.length && (

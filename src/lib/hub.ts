@@ -16,19 +16,19 @@ import {
 } from "lucide-react";
 
 export const FEATURES = [
-  { to: "/library", label: "Study HUB Library", labelAr: "مكتبة Study HUB", icon: BookOpen, emoji: "📚" },
-  { to: "/ai", label: "Study HUB AI", labelAr: "مساعد الذكاء الاصطناعي", icon: Bot, emoji: "🤖" },
-  { to: "/exams", label: "Exams", labelAr: "الامتحانات", icon: FileText, emoji: "📝" },
-  { to: "/todo", label: "To-Do List", labelAr: "قائمة المهام", icon: ListChecks, emoji: "✅" },
-  { to: "/focus", label: "Study Focus", labelAr: "التركيز الدراسي", icon: Timer, emoji: "⏱️" },
-  { to: "/notes", label: "Notes", labelAr: "الملاحظات", icon: StickyNote, emoji: "🗒️" },
-  { to: "/translator", label: "Translator", labelAr: "المترجم", icon: Languages, emoji: "🌐" },
-  { to: "/teachers", label: "Best Teachers", labelAr: "أفضل المعلمين", icon: GraduationCap, emoji: "👨‍🏫" },
-  { to: "/calculator", label: "Calculator", labelAr: "الآلة الحاسبة", icon: Calculator, emoji: "🧮" },
-  { to: "/community", label: "Community", labelAr: "المجتمع", icon: Users, emoji: "👥" },
-  { to: "/support", label: "Study HUB Support", labelAr: "الدعم الفني", icon: LifeBuoy, emoji: "🆘" },
-  { to: "/statistics", label: "Statistics", labelAr: "الإحصائيات", icon: BarChart3, emoji: "📊" },
-  { to: "/updates", label: "Latest Updates", labelAr: "آخر التحديثات", icon: Megaphone, emoji: "📰" },
+  { to: "/library", label: "Study HUB Library", labelAr: "مكتبة Study HUB", icon: BookOpen, emoji: "📚", tone: "tone-blue" },
+  { to: "/ai", label: "Study HUB AI", labelAr: "مساعد الذكاء الاصطناعي", icon: Bot, emoji: "🤖", tone: "tone-purple" },
+  { to: "/exams", label: "Exams", labelAr: "الامتحانات", icon: FileText, emoji: "📝", tone: "tone-orange" },
+  { to: "/todo", label: "To-Do List", labelAr: "قائمة المهام", icon: ListChecks, emoji: "✅", tone: "tone-green" },
+  { to: "/focus", label: "Study Focus", labelAr: "التركيز الدراسي", icon: Timer, emoji: "⏱️", tone: "tone-sky" },
+  { to: "/notes", label: "Notes", labelAr: "الملاحظات", icon: StickyNote, emoji: "🗒️", tone: "tone-pink" },
+  { to: "/translator", label: "Translator", labelAr: "المترجم", icon: Languages, emoji: "🌐", tone: "tone-teal" },
+  { to: "/teachers", label: "Best Teachers", labelAr: "أفضل المعلمين", icon: GraduationCap, emoji: "👨‍🏫", tone: "tone-indigo" },
+  { to: "/calculator", label: "Calculator", labelAr: "الآلة الحاسبة", icon: Calculator, emoji: "🧮", tone: "tone-orange" },
+  { to: "/community", label: "Community", labelAr: "المجتمع", icon: Users, emoji: "👥", tone: "tone-green" },
+  { to: "/support", label: "Study HUB Support", labelAr: "الدعم الفني", icon: LifeBuoy, emoji: "🆘", tone: "tone-sky" },
+  { to: "/statistics", label: "Statistics", labelAr: "الإحصائيات", icon: BarChart3, emoji: "📊", tone: "tone-indigo" },
+  { to: "/updates", label: "Latest Updates", labelAr: "آخر التحديثات", icon: Megaphone, emoji: "📰", tone: "tone-purple" },
 ] as const;
 
 export const SIDEBAR_EXTRA = [

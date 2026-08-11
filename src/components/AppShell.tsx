@@ -32,18 +32,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 function useDarkMode() {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
   useEffect(() => {
-    const stored = localStorage.getItem("studyhub-theme");
-    const dark = stored !== "light";
+    const dark = localStorage.getItem("studyhub-theme") === "dark";
     setIsDark(dark);
-    document.documentElement.classList.toggle("light", !dark);
+    document.documentElement.classList.toggle("dark", dark);
   }, []);
   const toggle = () => {
     const next = !isDark;
     setIsDark(next);
     localStorage.setItem("studyhub-theme", next ? "dark" : "light");
-    document.documentElement.classList.toggle("light", !next);
+    document.documentElement.classList.toggle("dark", next);
   };
   return { isDark, toggle };
 }
@@ -175,15 +174,15 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar p-4 lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar p-4 text-sidebar-foreground lg:flex">
         <StudyHubLogo className="mb-6 px-1" />
         <div className="flex-1 overflow-y-auto pr-1">
           <NavLinks />
         </div>
-        <p className="pt-3 text-[10px] leading-relaxed text-muted-foreground">
-          © Study HUB
+        <p className="pt-3 text-[10px] leading-relaxed text-sidebar-foreground/60">
+          جميع الحقوق محفوظة © 2027 <span className="font-bold">Study HUB</span>
           <br />
-          Developed by Ahmed Shaaban &amp; Retaj Mohamed
+          تم التطوير بواسطة Ahmed Shaaban &amp; Retaj Mohamed
         </p>
       </aside>
 
@@ -195,7 +194,7 @@ export function AppShell({
             className="absolute inset-0 bg-black/60"
             onClick={() => setOpen(false)}
           />
-          <div className="relative h-full w-72 overflow-y-auto bg-sidebar p-4">
+          <div className="relative h-full w-72 overflow-y-auto bg-sidebar p-4 text-sidebar-foreground">
             <div className="mb-6 flex items-center justify-between">
               <StudyHubLogo />
               <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
@@ -270,7 +269,7 @@ export function AppShell({
         </main>
 
         <footer className="border-t border-border px-4 py-6 text-center text-xs text-muted-foreground">
-          © All rights reserved 2024 Study HUB | Developed by Ahmed Shaaban &amp; Retaj Mohamed
+          جميع الحقوق محفوظة © 2027 لتطبيق <span className="font-bold">Study HUB</span> — تم التطوير بواسطة Ahmed Shaaban &amp; Retaj Mohamed
         </footer>
       </div>
 
