@@ -82,13 +82,16 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
       >
         <UserIcon className="size-4.5" /> Profile
       </Link>
-      <Link
-        to="/settings"
-        onClick={onNavigate}
-        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sidebar-foreground/80 hover:bg-sidebar-accent"
-      >
-        <Settings className="size-4.5" /> Settings
-      </Link>
+      {isAdmin && (
+        <Link
+          to="/admin"
+          onClick={onNavigate}
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sidebar-foreground/80 hover:bg-sidebar-accent"
+        >
+          <Shield className="size-4.5" /> Admin Panel
+        </Link>
+      )}
+
       {isAdmin && (
         <Link
           to="/admin"
