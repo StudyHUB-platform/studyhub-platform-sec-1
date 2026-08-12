@@ -91,16 +91,6 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
           <Shield className="size-4.5" /> Admin Panel
         </Link>
       )}
-
-      {isAdmin && (
-        <Link
-          to="/admin"
-          onClick={onNavigate}
-          className="flex items-center gap-3 rounded-xl border border-primary/40 px-3 py-2.5 text-sm font-bold text-primary"
-        >
-          <Shield className="size-4.5" /> Admin Panel
-        </Link>
-      )}
     </nav>
   );
 }
