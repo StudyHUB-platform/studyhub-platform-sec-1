@@ -310,6 +310,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          image_url: string | null
           is_published: boolean
           title: string
         }
@@ -317,6 +318,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          image_url?: string | null
           is_published?: boolean
           title: string
         }
@@ -324,6 +326,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          image_url?: string | null
           is_published?: boolean
           title?: string
         }
@@ -333,24 +336,30 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          email: string | null
           full_name: string | null
           id: string
+          is_banned: boolean
           phone: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id: string
+          is_banned?: boolean
           phone?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id?: string
+          is_banned?: boolean
           phone?: string | null
           updated_at?: string
         }

@@ -6,7 +6,6 @@ import {
   LogOut,
   Menu,
   Moon,
-  Settings,
   Shield,
   Sun,
   User as UserIcon,
@@ -82,18 +81,11 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
       >
         <UserIcon className="size-4.5" /> Profile
       </Link>
-      <Link
-        to="/settings"
-        onClick={onNavigate}
-        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sidebar-foreground/80 hover:bg-sidebar-accent"
-      >
-        <Settings className="size-4.5" /> Settings
-      </Link>
       {isAdmin && (
         <Link
           to="/admin"
           onClick={onNavigate}
-          className="flex items-center gap-3 rounded-xl border border-primary/40 px-3 py-2.5 text-sm font-bold text-primary"
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sidebar-foreground/80 hover:bg-sidebar-accent"
         >
           <Shield className="size-4.5" /> Admin Panel
         </Link>
@@ -237,9 +229,6 @@ export function AppShell({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
                   <UserIcon className="mr-2 size-4" /> Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
-                  <Settings className="mr-2 size-4" /> Settings
                 </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem onClick={() => navigate({ to: "/admin" })}>
