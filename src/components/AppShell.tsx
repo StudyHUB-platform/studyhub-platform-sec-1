@@ -6,7 +6,6 @@ import {
   LogOut,
   Menu,
   Moon,
-  Settings,
   Shield,
   Sun,
   User as UserIcon,
