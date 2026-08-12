@@ -241,9 +241,6 @@ export function AppShell({
                 <DropdownMenuItem onClick={() => navigate({ to: "/profile" })}>
                   <UserIcon className="mr-2 size-4" /> Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
-                  <Settings className="mr-2 size-4" /> Settings
-                </DropdownMenuItem>
                 {isAdmin && (
                   <DropdownMenuItem onClick={() => navigate({ to: "/admin" })}>
                     <Shield className="mr-2 size-4" /> Admin Panel
