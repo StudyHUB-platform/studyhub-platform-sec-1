@@ -405,7 +405,10 @@ export function AnnouncementsAdmin({
   const qc = useQueryClient();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [image, setImage] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
 
+  const withImage = table === "platform_updates";
   const key = ["admin", table];
   const { data } = useQuery({
     queryKey: key,
@@ -415,7 +418,15 @@ export function AnnouncementsAdmin({
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Array<{ id: string; title: string; is_published: boolean }>;
+      return data as Array<{
+        id: string;
+        title: string;
+        is_published: boolean;
+        content?: string;
+        message?: string;
+        image_url?: string | null;
+        created_at: string;
+      }>;
     },
   });
 
@@ -426,20 +437,41 @@ export function AnnouncementsAdmin({
     void qc.invalidateQueries({ queryKey: ["notifications"] });
   };
 
-  const add = useMutation({
+  const reset = () => {
+    setTitle("");
+    setBody("");
+    setImage("");
+    setEditingId(null);
+  };
+
+  const payload = () => {
+    const base =
+      table === "notifications"
+        ? { title: title.trim(), message: body.trim() }
+        : { title: title.trim(), content: body.trim() };
+    return withImage ? { ...base, image_url: image.trim() || null } : base;
+  };
+
+  const save = useMutation({
     mutationFn: async () => {
-      const row =
-        table === "notifications"
-          ? { title: title.trim(), message: body.trim(), is_published: true }
-          : { title: title.trim(), content: body.trim(), is_published: true };
-      const { error } = await supabase.from(table).insert(row as never);
-      if (error) throw error;
+      if (editingId) {
+        const { error } = await supabase
+          .from(table)
+          .update(payload() as never)
+          .eq("id", editingId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from(table)
+          .insert({ ...payload(), is_published: true } as never);
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
-      setTitle("");
-      setBody("");
+      const wasEdit = Boolean(editingId);
+      reset();
       invalidate();
-      toast.success("تم النشر");
+      toast.success(wasEdit ? "تم تحديث المنشور" : "تم النشر");
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -453,6 +485,7 @@ export function AnnouncementsAdmin({
       if (error) throw error;
     },
     onSuccess: invalidate,
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const remove = useMutation({
@@ -460,39 +493,83 @@ export function AnnouncementsAdmin({
       const { error } = await supabase.from(table).delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: invalidate,
+    onSuccess: () => {
+      reset();
+      invalidate();
+      toast.success("تم الحذف");
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   return (
     <div className="space-y-4">
-      <Section title={heading}>
+      <Section title={editingId ? `✏️ تعديل — ${heading}` : heading}>
         <Field label="العنوان">
           <Input value={title} onChange={(e) => setTitle(e.target.value)} />
         </Field>
         <Field label={bodyLabel}>
           <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} />
         </Field>
-        <Button
-          className="gradient-gold font-bold"
-          disabled={!title.trim() || !body.trim()}
-          onClick={() => add.mutate()}
-        >
-          <Plus className="mr-1 size-4" /> نشر
-        </Button>
+        {withImage && (
+          <Field label="رابط الصورة (اختياري)">
+            <Input
+              value={image}
+              onChange={(e) => setImage(e.target.value)}
+              placeholder="https://…"
+            />
+          </Field>
+        )}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            className="gradient-gold font-bold"
+            disabled={!title.trim() || !body.trim() || save.isPending}
+            onClick={() => save.mutate()}
+          >
+            <Plus className="mr-1 size-4" /> {editingId ? "حفظ التعديل" : "نشر"}
+          </Button>
+          {editingId && (
+            <Button variant="outline" onClick={reset}>
+              إلغاء
+            </Button>
+          )}
+        </div>
       </Section>
 
       <Section title={`المنشورات (${data?.length ?? 0})`}>
+        {!data?.length && <p className="text-sm text-muted-foreground">لا توجد منشورات بعد.</p>}
         <div className="space-y-2">
           {data?.map((r) => (
-            <div key={r.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
-              <p className="min-w-0 flex-1 truncate text-sm font-bold">{r.title}</p>
-              <Switch
-                checked={r.is_published}
-                onCheckedChange={() => toggle.mutate({ id: r.id, is_published: r.is_published })}
-              />
-              <Button size="icon" variant="ghost" onClick={() => remove.mutate(r.id)}>
-                <Trash2 className="size-4 text-destructive" />
-              </Button>
+            <div key={r.id} className="rounded-xl border border-border p-3">
+              <div className="flex items-center gap-3">
+                <p className="min-w-0 flex-1 truncate text-sm font-bold">{r.title}</p>
+                <span className="text-[11px] font-bold text-muted-foreground">
+                  {r.is_published ? "منشور" : "مخفي"}
+                </span>
+                <Switch
+                  checked={r.is_published}
+                  onCheckedChange={() => toggle.mutate({ id: r.id, is_published: r.is_published })}
+                />
+              </div>
+              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                {r.content ?? r.message}
+              </p>
+              <div className="mt-2 flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setEditingId(r.id);
+                    setTitle(r.title);
+                    setBody(r.content ?? r.message ?? "");
+                    setImage(r.image_url ?? "");
+                  }}
+                >
+                  <Pencil className="mr-1 size-3.5" /> تعديل
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => remove.mutate(r.id)}>
+                  <Trash2 className="mr-1 size-3.5 text-destructive" /> حذف
+                </Button>
+              </div>
             </div>
           ))}
         </div>
@@ -500,3 +577,4 @@ export function AnnouncementsAdmin({
     </div>
   );
 }
+
