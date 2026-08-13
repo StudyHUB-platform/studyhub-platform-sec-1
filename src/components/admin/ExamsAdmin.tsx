@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { CheckCircle2, Pencil, Plus, Send, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -10,8 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const STATUS_AR: Record<string, string> = {
+  draft: "📄 مسودة",
+  published: "✅ منشور",
+  ended: "🔒 منتهي",
+};
 
 export function ExamsAdmin() {
   const qc = useQueryClient();
@@ -20,6 +25,7 @@ export function ExamsAdmin() {
   const [description, setDescription] = useState("");
   const [duration, setDuration] = useState(30);
   const [selected, setSelected] = useState<string | null>(null);
+  const [editingExam, setEditingExam] = useState<string | null>(null);
 
   const [qText, setQText] = useState("");
   const [qType, setQType] = useState("mcq");
@@ -60,38 +66,47 @@ export function ExamsAdmin() {
     },
   });
 
+  const resetExamForm = () => {
+    setName("");
+    setDescription("");
+    setDuration(30);
+    setEditingExam(null);
+  };
+
   const createExam = useMutation({
     mutationFn: async () => {
+      const fields = {
+        name: name.trim(),
+        subject,
+        description: description.trim() || null,
+        duration_minutes: duration,
+      };
+      if (editingExam) {
+        const { error } = await supabase.from("exams").update(fields).eq("id", editingExam);
+        if (error) throw error;
+        return editingExam;
+      }
       const { data, error } = await supabase
         .from("exams")
-        .insert({
-          name: name.trim(),
-          subject,
-          description: description.trim() || null,
-          duration_minutes: duration,
-          status: "draft",
-        })
+        .insert({ ...fields, status: "draft" })
         .select("id")
         .single();
       if (error) throw error;
       return data.id;
     },
     onSuccess: (id) => {
-      setName("");
-      setDescription("");
+      const wasEdit = Boolean(editingExam);
+      resetExamForm();
       setSelected(id);
       invalidate();
-      toast.success("تم إنشاء الامتحان — أضف الأسئلة ثم انشره");
+      toast.success(wasEdit ? "تم تحديث الامتحان" : "تم إنشاء الامتحان كمسودة — أضف الأسئلة ثم انشره");
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const publish = useMutation({
+  const setStatus = useMutation({
     mutationFn: async (e: { id: string; status: string }) => {
-      const { error } = await supabase
-        .from("exams")
-        .update({ status: e.status === "published" ? "draft" : "published" })
-        .eq("id", e.id);
+      const { error } = await supabase.from("exams").update({ status: e.status }).eq("id", e.id);
       if (error) throw error;
     },
     onSuccess: invalidate,
@@ -105,8 +120,11 @@ export function ExamsAdmin() {
     },
     onSuccess: () => {
       setSelected(null);
+      resetExamForm();
       invalidate();
+      toast.success("تم حذف الامتحان");
     },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const addQuestion = useMutation({
@@ -150,7 +168,7 @@ export function ExamsAdmin() {
 
   return (
     <div className="space-y-4">
-      <Section title="📝 إنشاء امتحان جديد">
+      <Section title={editingExam ? "✏️ تعديل الامتحان" : "📝 إنشاء امتحان جديد"}>
         <div className="grid gap-3 md:grid-cols-2">
           <div className="space-y-1.5">
             <Label className="text-xs">اسم الامتحان</Label>
@@ -184,9 +202,20 @@ export function ExamsAdmin() {
             <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
           </div>
         </div>
-        <Button className="gradient-gold font-bold" disabled={!name.trim()} onClick={() => createExam.mutate()}>
-          <Plus className="mr-1 size-4" /> إنشاء
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            className="gradient-gold font-bold"
+            disabled={!name.trim() || createExam.isPending}
+            onClick={() => createExam.mutate()}
+          >
+            <Plus className="mr-1 size-4" /> {editingExam ? "حفظ التعديل" : "إنشاء كمسودة"}
+          </Button>
+          {editingExam && (
+            <Button variant="outline" onClick={resetExamForm}>
+              إلغاء
+            </Button>
+          )}
+        </div>
       </Section>
 
       <Section title={`الامتحانات (${exams?.length ?? 0})`}>
@@ -204,14 +233,40 @@ export function ExamsAdmin() {
                 <button className="min-w-0 flex-1 text-left" onClick={() => setSelected(e.id)}>
                   <p className="truncate text-sm font-bold">{e.name}</p>
                   <p className="text-xs text-muted-foreground">
-                    {e.subject} · {e.duration_minutes} د · {e.status}
+                    {e.subject} · {e.duration_minutes} دقيقة · {STATUS_AR[e.status] ?? e.status}
                   </p>
                 </button>
-                <Switch
-                  checked={e.status === "published"}
-                  onCheckedChange={() => publish.mutate({ id: e.id, status: e.status })}
-                />
-                <Button size="icon" variant="ghost" onClick={() => removeExam.mutate(e.id)}>
+                <Select value={e.status} onValueChange={(v) => setStatus.mutate({ id: e.id, status: v })}>
+                  <SelectTrigger className="w-[130px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">📄 مسودة</SelectItem>
+                    <SelectItem value="published">✅ منشور</SelectItem>
+                    <SelectItem value="ended">🔒 منتهي</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => {
+                    setEditingExam(e.id);
+                    setSelected(e.id);
+                    setName(e.name);
+                    setSubject(e.subject);
+                    setDescription(e.description ?? "");
+                    setDuration(e.duration_minutes);
+                  }}
+                >
+                  <Pencil className="size-4" />
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => {
+                    if (confirm(`حذف امتحان "${e.name}" وكل أسئلته؟`)) removeExam.mutate(e.id);
+                  }}
+                >
                   <Trash2 className="size-4 text-destructive" />
                 </Button>
               </div>
