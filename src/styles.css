@@ -115,6 +115,11 @@
   --tone-pink: linear-gradient(140deg, oklch(0.65 0.18 350), oklch(0.55 0.19 355));
   --tone-teal: linear-gradient(140deg, oklch(0.62 0.11 205), oklch(0.5 0.11 215));
   --tone-indigo: linear-gradient(140deg, oklch(0.52 0.17 285), oklch(0.4 0.16 288));
+  --tone-gold: linear-gradient(140deg, oklch(0.9 0.11 92), oklch(0.79 0.15 82));
+  --tone-lime: linear-gradient(140deg, oklch(0.88 0.14 145), oklch(0.79 0.16 150));
+  --tone-rose: linear-gradient(140deg, oklch(0.83 0.11 22), oklch(0.74 0.15 20));
+  --tone-yellow: linear-gradient(140deg, oklch(0.93 0.15 100), oklch(0.86 0.17 95));
+  --tone-turquoise: linear-gradient(140deg, oklch(0.88 0.1 190), oklch(0.79 0.12 195));
 }
 
 /* Dark mode (toggled by the Dark Mode switch) */
@@ -218,4 +223,24 @@
 }
 @utility tone-indigo {
   background-image: var(--tone-indigo);
+}
+@utility tone-gold {
+  background-image: var(--tone-gold);
+  color: var(--navy);
+}
+@utility tone-lime {
+  background-image: var(--tone-lime);
+  color: var(--navy);
+}
+@utility tone-rose {
+  background-image: var(--tone-rose);
+  color: var(--navy);
+}
+@utility tone-yellow {
+  background-image: var(--tone-yellow);
+  color: var(--navy);
+}
+@utility tone-turquoise {
+  background-image: var(--tone-turquoise);
+  color: var(--navy);
 }

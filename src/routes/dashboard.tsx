@@ -138,24 +138,28 @@ function Dashboard() {
               key={f.to}
               to={f.to}
               className={cn(
-                "tone-card group flex items-start gap-3 p-5 transition-transform hover:-translate-y-1",
+                "tone-card group flex flex-col gap-3 p-5 transition-transform hover:-translate-y-1",
                 f.tone,
               )}
             >
-              <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-white/15 text-2xl">
-                {f.emoji}
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="font-display truncate text-base font-extrabold">{f.label}</p>
-                <p className="mt-0.5 text-xs opacity-85">{f.labelAr}</p>
+              <div className="flex items-start gap-3">
+                <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-white/20 text-2xl">
+                  {f.emoji}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-display truncate text-base font-extrabold">{f.label}</p>
+                  <p className="mt-0.5 text-xs opacity-85">{f.labelAr}</p>
+                </div>
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white/25 transition-transform group-hover:translate-x-0.5">
+                  <ArrowRight className="size-4" />
+                </span>
               </div>
-              <span className="grid size-8 shrink-0 place-items-center self-end rounded-full bg-white/20 transition-transform group-hover:translate-x-0.5">
-                <ArrowRight className="size-4" />
-              </span>
+              <p className="text-xs leading-relaxed font-medium opacity-90">{f.desc}</p>
             </Link>
           );
         })}
       </section>
+
 
       <section className="mt-8">
         <h2 className="font-display mb-3 flex items-center gap-2 text-lg font-bold">

@@ -13,6 +13,7 @@ import {
   TeachersAdmin,
 } from "@/components/admin/AdminSections";
 import { ExamsAdmin, SupportAdmin } from "@/components/admin/ExamsAdmin";
+import { StudentsAdmin } from "@/components/admin/StudentsAdmin";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -50,8 +51,9 @@ function AdminPage() {
 
   return (
     <AppShell title="🔐 Admin Panel" subtitle="إدارة كل محتوى المنصة">
-      <Tabs defaultValue="library">
+      <Tabs defaultValue="students">
         <TabsList className="flex h-auto flex-wrap justify-start gap-1">
+          <TabsTrigger value="students">👥 الطلاب</TabsTrigger>
           <TabsTrigger value="library">📚 المكتبة</TabsTrigger>
           <TabsTrigger value="exams">📝 الامتحانات</TabsTrigger>
           <TabsTrigger value="teachers">👨‍🏫 المعلمون</TabsTrigger>
@@ -63,6 +65,9 @@ function AdminPage() {
         </TabsList>
 
         <div className="mt-4">
+          <TabsContent value="students">
+            <StudentsAdmin />
+          </TabsContent>
           <TabsContent value="library">
             <LibraryAdmin />
           </TabsContent>

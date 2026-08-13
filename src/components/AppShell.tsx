@@ -172,10 +172,11 @@ export function AppShell({
           <NavLinks />
         </div>
         <p className="pt-3 text-[10px] leading-relaxed text-sidebar-foreground/60">
-          جميع الحقوق محفوظة © 2027 <span className="font-bold">Study HUB</span>
+          © 2027 جميع حقوق النشر محفوظة لتطبيق <span className="font-bold">Study HUB</span>
           <br />
-          تم التطوير بواسطة Ahmed Shaaban &amp; Retaj Mohamed
+          Developed by Ahmed Shaaban &amp; Retaj Mohamed
         </p>
+
       </aside>
 
       {/* Mobile drawer */}
@@ -258,8 +259,12 @@ export function AppShell({
         </main>
 
         <footer className="border-t border-border px-4 py-6 text-center text-xs text-muted-foreground">
-          جميع الحقوق محفوظة © 2027 لتطبيق <span className="font-bold">Study HUB</span> — تم التطوير بواسطة Ahmed Shaaban &amp; Retaj Mohamed
+          <p className="font-bold">
+            © 2027 جميع حقوق النشر محفوظة لتطبيق <span className="font-bold">Study HUB</span>
+          </p>
+          <p className="mt-1">Developed by Ahmed Shaaban &amp; Retaj Mohamed</p>
         </footer>
+
       </div>
 
       <SmartAssistant />

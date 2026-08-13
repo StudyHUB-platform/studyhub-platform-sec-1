@@ -7,6 +7,8 @@ type Profile = {
   full_name: string | null;
   avatar_url: string | null;
   phone: string | null;
+  email: string | null;
+  is_banned: boolean;
 };
 
 type AuthValue = {
@@ -37,9 +39,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loadExtras = async (userId: string) => {
     const [{ data: prof }, { data: roles }] = await Promise.all([
-      supabase.from("profiles").select("id, full_name, avatar_url, phone").eq("id", userId).maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url, phone, email, is_banned")
+        .eq("id", userId)
+        .maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
     ]);
+    if (prof && (prof as Profile).is_banned) {
+      await supabase.auth.signOut();
+      setProfile(null);
+      setIsAdmin(false);
+      return;
+    }
     setProfile((prof as Profile) ?? null);
     setIsAdmin(Boolean(roles?.some((r) => r.role === "admin")));
   };

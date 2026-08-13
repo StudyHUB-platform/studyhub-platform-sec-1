@@ -1,14 +1,17 @@
 import { GraduationCap, Lock } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+
+import { unlockAdminAccess } from "@/lib/admin.functions";
+import { useAuth } from "@/hooks/useAuth";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-const ADMIN_PASSCODE = "20121998";
 export const ADMIN_UNLOCK_KEY = "studyhub-admin-unlocked";
 
 /**
@@ -25,6 +28,9 @@ export function StudyHubLogo({
   compact?: boolean;
 }) {
   const navigate = useNavigate();
+  const unlock = useServerFn(unlockAdminAccess);
+  const { session, refreshProfile } = useAuth();
+  const [busy, setBusy] = useState(false);
   const clicks = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [open, setOpen] = useState(false);
@@ -46,15 +52,27 @@ export function StudyHubLogo({
     }
   };
 
-  const submit = () => {
-    if (code.trim() !== ADMIN_PASSCODE) {
-      toast.error("كلمة السر غير صحيحة");
+  const submit = async () => {
+    if (!session) {
+      toast.error("سجّل الدخول أولاً ثم افتح لوحة الأدمن");
+      setOpen(false);
+      void navigate({ to: "/auth" });
       return;
     }
-    sessionStorage.setItem(ADMIN_UNLOCK_KEY, "1");
-    setCode("");
-    setOpen(false);
-    void navigate({ to: "/admin" });
+    setBusy(true);
+    try {
+      await unlock({ data: { passcode: code.trim() } });
+      sessionStorage.setItem(ADMIN_UNLOCK_KEY, "1");
+      await refreshProfile();
+      setCode("");
+      setOpen(false);
+      toast.success("تم فتح لوحة الأدمن");
+      void navigate({ to: "/admin" });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "كلمة السر غير صحيحة");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -90,11 +108,11 @@ export function StudyHubLogo({
             value={code}
             onChange={(e) => setCode(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") submit();
+              if (e.key === "Enter") void submit();
             }}
             placeholder="••••••••"
           />
-          <Button className="gradient-gold font-bold" onClick={submit}>
+          <Button className="gradient-gold font-bold" disabled={busy} onClick={() => void submit()}>
             دخول لوحة الأدمن
           </Button>
         </DialogContent>
