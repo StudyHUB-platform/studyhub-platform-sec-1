@@ -14,6 +14,7 @@ import {
   LIBRARY_CATEGORIES,
   LIBRARY_CATEGORY_LABELS,
   OTHER_SUBJECTS,
+  SUBJECT_AR,
   SUBJECT_EMOJI,
 } from "@/lib/hub";
 import { Button } from "@/components/ui/button";
@@ -156,7 +157,10 @@ function LibraryPage() {
           </Chip>
           {CORE_SUBJECTS.map((s) => (
             <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>
-              {SUBJECT_EMOJI[s]} {s}
+              <span className="block leading-tight">
+                {SUBJECT_EMOJI[s]} {SUBJECT_AR[s] ?? s}
+              </span>
+              <span className="block text-[10px] leading-tight font-semibold opacity-75">{s}</span>
             </Chip>
           ))}
         </div>
@@ -167,7 +171,10 @@ function LibraryPage() {
         <div className="flex flex-wrap gap-2">
           {OTHER_SUBJECTS.map((s) => (
             <Chip key={s} active={subject === s} onClick={() => setSubject(s)}>
-              {SUBJECT_EMOJI[s]} {s}
+              <span className="block leading-tight">
+                {SUBJECT_EMOJI[s]} {SUBJECT_AR[s] ?? s}
+              </span>
+              <span className="block text-[10px] leading-tight font-semibold opacity-75">{s}</span>
             </Chip>
           ))}
         </div>
