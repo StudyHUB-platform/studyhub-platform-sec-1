@@ -61,20 +61,25 @@ function WelcomeScreen() {
           </Button>
         </div>
 
-        <div className="mt-14 grid w-full grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-14 grid w-full grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.to} className="hub-card p-4 text-left">
               <div className="text-2xl">{f.emoji}</div>
               <p className="font-display mt-2 text-sm font-bold">{f.label}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">{f.labelAr}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{f.desc}</p>
             </div>
           ))}
         </div>
 
         <footer className="mt-16 text-xs text-muted-foreground">
-          جميع الحقوق محفوظة © 2027 لتطبيق <span className="font-bold">Study HUB</span> — تم التطوير بواسطة Ahmed Shaaban &amp; Retaj Mohamed
+          <p className="font-bold">
+            © 2027 جميع حقوق النشر محفوظة لتطبيق <span className="font-bold">Study HUB</span>
+          </p>
+          <p className="mt-1">Developed by Ahmed Shaaban &amp; Retaj Mohamed</p>
         </footer>
       </div>
     </div>
   );
 }
+
