@@ -367,6 +367,19 @@ export function SupportAdmin() {
     },
   });
 
+  const { data: students } = useQuery({
+    queryKey: ["admin-support-students"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, email, phone");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const studentOf = (userId: string) => students?.find((s) => s.id === userId);
+
   const { data: messages } = useQuery({
     queryKey: ["admin-support-messages", active],
     enabled: !!active,
@@ -391,32 +404,63 @@ export function SupportAdmin() {
         is_admin: true,
       });
       if (error) throw error;
+      await supabase
+        .from("support_conversations")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("id", active!);
     },
     onSuccess: () => {
       setBody("");
       void qc.invalidateQueries({ queryKey: ["admin-support-messages", active] });
+      void qc.invalidateQueries({ queryKey: ["admin-support"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const setConvStatus = useMutation({
+    mutationFn: async (v: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from("support_conversations")
+        .update({ status: v.status })
+        .eq("id", v.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("تم تحديث حالة المحادثة");
+      void qc.invalidateQueries({ queryKey: ["admin-support"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const current = convos?.find((c) => c.id === active);
+  const student = current ? studentOf(current.user_id) : undefined;
+  const closed = current?.status === "closed";
+
   return (
-    <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
+    <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
       <div className="space-y-2">
         {!convos?.length && <p className="hub-card p-4 text-sm text-muted-foreground">لا توجد تذاكر.</p>}
-        {convos?.map((c) => (
-          <button
-            key={c.id}
-            onClick={() => setActive(c.id)}
-            className={
-              active === c.id
-                ? "w-full rounded-xl border border-primary/50 bg-primary/10 p-3 text-left"
-                : "hub-card w-full p-3 text-left"
-            }
-          >
-            <p className="truncate text-sm font-bold">{c.subject}</p>
-            <p className="text-xs text-muted-foreground">{c.status}</p>
-          </button>
-        ))}
+        {convos?.map((c) => {
+          const s = studentOf(c.user_id);
+          return (
+            <button
+              key={c.id}
+              onClick={() => setActive(c.id)}
+              className={
+                active === c.id
+                  ? "w-full rounded-xl border border-primary/50 bg-primary/10 p-3 text-left"
+                  : "hub-card w-full p-3 text-left"
+              }
+            >
+              <p className="truncate text-sm font-bold">{c.subject}</p>
+              <p className="truncate text-xs text-muted-foreground">👤 {s?.full_name ?? "طالب"}</p>
+              <p className="truncate text-xs text-muted-foreground">📧 {s?.email ?? "—"}</p>
+              <p className="mt-1 text-[11px] font-bold text-primary">
+                {c.status === "closed" ? "🔒 منتهية" : "🟢 مفتوحة"}
+              </p>
+            </button>
+          );
+        })}
       </div>
 
       <div className="hub-card flex h-[60vh] flex-col p-0">
@@ -426,7 +470,37 @@ export function SupportAdmin() {
           </div>
         ) : (
           <>
+            <div className="flex flex-wrap items-center gap-2 border-b border-border p-3">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold">{current?.subject}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  👤 {student?.full_name ?? "طالب"} · 📧 {student?.email ?? "—"} · 📱{" "}
+                  {student?.phone ?? "—"}
+                </p>
+              </div>
+              {closed ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setConvStatus.mutate({ id: active, status: "active" })}
+                >
+                  <CheckCircle2 className="mr-1 size-3.5" /> إعادة فتح
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setConvStatus.mutate({ id: active, status: "closed" })}
+                >
+                  <X className="mr-1 size-3.5" /> إنهاء المحادثة
+                </Button>
+              )}
+            </div>
+
             <div className="flex-1 space-y-3 overflow-y-auto p-4">
+              {!messages?.length && (
+                <p className="text-center text-sm text-muted-foreground">لا توجد رسائل بعد.</p>
+              )}
               {messages?.map((m) => (
                 <div key={m.id} className={m.is_admin ? "flex justify-end" : "flex justify-start"}>
                   <div
@@ -437,7 +511,7 @@ export function SupportAdmin() {
                     }
                   >
                     <span className="mb-0.5 block text-[10px] font-bold opacity-70">
-                      {m.is_admin ? "Support" : "Student"}
+                      {m.is_admin ? "الدعم الفني" : (student?.full_name ?? "الطالب")}
                     </span>
                     {m.body}
                   </div>
@@ -445,9 +519,21 @@ export function SupportAdmin() {
               ))}
             </div>
             <div className="flex gap-2 border-t border-border p-3">
-              <Input value={body} onChange={(e) => setBody(e.target.value)} placeholder="رد الدعم…" />
-              <Button className="gradient-gold" disabled={!body.trim()} onClick={() => send.mutate()}>
-                إرسال
+              <Input
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder={closed ? "المحادثة منتهية" : "رد الدعم…"}
+                disabled={closed}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && body.trim() && !closed) send.mutate();
+                }}
+              />
+              <Button
+                className="gradient-gold"
+                disabled={!body.trim() || closed || send.isPending}
+                onClick={() => send.mutate()}
+              >
+                <Send className="size-4" />
               </Button>
             </div>
           </>
