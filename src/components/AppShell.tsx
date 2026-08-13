@@ -172,10 +172,11 @@ export function AppShell({
           <NavLinks />
         </div>
         <p className="pt-3 text-[10px] leading-relaxed text-sidebar-foreground/60">
-          جميع الحقوق محفوظة © 2027 <span className="font-bold">Study HUB</span>
+          © 2027 جميع حقوق النشر محفوظة لتطبيق <span className="font-bold">Study HUB</span>
           <br />
-          تم التطوير بواسطة Ahmed Shaaban &amp; Retaj Mohamed
+          Developed by Ahmed Shaaban &amp; Retaj Mohamed
         </p>
+
       </aside>
 
       {/* Mobile drawer */}
