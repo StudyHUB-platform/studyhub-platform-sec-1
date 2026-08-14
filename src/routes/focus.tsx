@@ -179,7 +179,9 @@ function FocusPage() {
         <div className="mt-5 space-y-2">
           {sessions?.map((s, i) => (
             <div key={i} className="hub-card flex items-center justify-between p-3 text-sm">
-              <span className="font-semibold">{s.mode || "جلسة دراسة"}</span>
+              <span className="font-semibold">
+                {MODES.find((m) => m.key === s.mode)?.labelAr ?? "جلسة دراسة"}
+              </span>
               <span className="text-muted-foreground">
                 {s.minutes} د · {new Date(s.created_at).toLocaleDateString("ar-EG")}
               </span>
