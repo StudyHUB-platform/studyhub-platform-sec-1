@@ -43,6 +43,14 @@ function UpdatesPage() {
       <div className="space-y-3">
         {data?.map((u) => (
           <article key={u.id} className="hub-card p-4">
+            {u.image_url && (
+              <img
+                src={u.image_url}
+                alt={u.title}
+                className="mb-3 max-h-72 w-full rounded-xl object-cover"
+                loading="lazy"
+              />
+            )}
             <p className="font-display font-bold text-primary">{u.title}</p>
             <p className="mt-1 text-sm whitespace-pre-wrap text-muted-foreground">{u.content}</p>
             <p className="mt-2 text-[11px] text-muted-foreground">
