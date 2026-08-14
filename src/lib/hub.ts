@@ -166,6 +166,7 @@ export const CORE_SUBJECTS = [
   "Math",
   "Combined Science",
   "Philosophy",
+  "Al-Azhar",
 ] as const;
 
 export const OTHER_SUBJECTS = [
@@ -186,6 +187,7 @@ export const SUBJECT_EMOJI: Record<string, string> = {
   Math: "➗",
   "Combined Science": "🔬",
   Philosophy: "🧠",
+  "Al-Azhar": "🕌",
   "Programming & Computer Science": "💻",
   "Islamic Religious Education": "🕌",
   "Christian Religious Education": "✝️",
@@ -201,6 +203,7 @@ export const SUBJECT_AR: Record<string, string> = {
   Math: "الرياضيات",
   "Combined Science": "العلوم المدمجة",
   Philosophy: "الفلسفة والمنطق",
+  "Al-Azhar": "الأزهر",
   "Programming & Computer Science": "البرمجة وعلوم الحاسب",
   "Islamic Religious Education": "التربية الإسلامية",
   "Christian Religious Education": "التربية المسيحية",
