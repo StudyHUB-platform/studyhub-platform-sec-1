@@ -4,7 +4,7 @@ import { ExternalLink, GraduationCap } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
-import { SUBJECT_EMOJI } from "@/lib/hub";
+import { SUBJECT_AR, SUBJECT_EMOJI } from "@/lib/hub";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/teachers")({

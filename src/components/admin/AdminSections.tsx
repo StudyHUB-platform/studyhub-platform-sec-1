@@ -205,6 +205,7 @@ export function TeachersAdmin() {
   const qc = useQueryClient();
   const [subject, setSubject] = useState<string>(ALL_SUBJECTS[0]!);
   const [name, setName] = useState("");
+  const [teacher, setTeacher] = useState("");
   const [url, setUrl] = useState("");
   const [image, setImage] = useState("");
 
@@ -222,6 +223,7 @@ export function TeachersAdmin() {
       const { error } = await supabase.from("teachers").insert({
         subject,
         channel_name: name.trim(),
+        teacher_name: teacher.trim() || null,
         channel_url: url.trim(),
         image_url: image.trim() || null,
       });
@@ -229,6 +231,7 @@ export function TeachersAdmin() {
     },
     onSuccess: () => {
       setName("");
+      setTeacher("");
       setUrl("");
       setImage("");
       void qc.invalidateQueries({ queryKey: ["admin-teachers"] });
@@ -255,14 +258,17 @@ export function TeachersAdmin() {
           <Field label="المادة">
             <Picker value={subject} onChange={setSubject} options={ALL_SUBJECTS} />
           </Field>
-          <Field label="اسم القناة / المعلم">
+          <Field label="اسم القناة">
             <Input value={name} onChange={(e) => setName(e.target.value)} />
+          </Field>
+          <Field label="اسم المعلم">
+            <Input value={teacher} onChange={(e) => setTeacher(e.target.value)} />
           </Field>
           <Field label="رابط القناة">
             <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://youtube.com/…" />
           </Field>
-          <Field label="صورة (رابط، اختياري)">
-            <Input value={image} onChange={(e) => setImage(e.target.value)} />
+          <Field label="صورة القناة على يوتيوب (رابط)">
+            <Input value={image} onChange={(e) => setImage(e.target.value)} placeholder="https://…" />
           </Field>
         </div>
         <Button
@@ -280,6 +286,9 @@ export function TeachersAdmin() {
             <div key={t.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold">{t.channel_name}</p>
+                {t.teacher_name && (
+                  <p className="truncate text-xs font-semibold text-primary">{t.teacher_name}</p>
+                )}
                 <p className="text-xs text-muted-foreground">{t.subject}</p>
               </div>
               <Button size="icon" variant="ghost" onClick={() => remove.mutate(t.id)}>
