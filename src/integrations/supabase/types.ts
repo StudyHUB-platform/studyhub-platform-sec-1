@@ -459,6 +459,7 @@ export type Database = {
           id: string
           image_url: string | null
           subject: string
+          teacher_name: string | null
         }
         Insert: {
           channel_name: string
@@ -467,6 +468,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           subject: string
+          teacher_name?: string | null
         }
         Update: {
           channel_name?: string
@@ -475,6 +477,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           subject?: string
+          teacher_name?: string | null
         }
         Relationships: []
       }

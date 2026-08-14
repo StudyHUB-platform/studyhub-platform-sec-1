@@ -1,0 +1,1 @@
+ALTER TABLE public.teachers ADD COLUMN IF NOT EXISTS teacher_name text;
