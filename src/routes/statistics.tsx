@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart3, CheckCircle2, FileText, Timer } from "lucide-react";
+import { BarChart3, CheckCircle2, FileText, Timer, XCircle } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,7 +48,10 @@ function StatsPage() {
       const [sessions, todos, attempts] = await Promise.all([
         supabase.from("study_sessions").select("minutes, created_at"),
         supabase.from("todos").select("is_done"),
-        supabase.from("exam_attempts").select("percentage, created_at"),
+        supabase
+          .from("exam_attempts")
+          .select("percentage, score, total, created_at, exams(name)")
+          .order("created_at", { ascending: false }),
       ]);
       return {
         sessions: sessions.data ?? [],
@@ -61,6 +64,8 @@ function StatsPage() {
   const minutes = (data?.sessions ?? []).reduce((a, s) => a + s.minutes, 0);
   const doneTodos = (data?.todos ?? []).filter((t) => t.is_done).length;
   const totalTodos = data?.todos.length ?? 0;
+  const correct = (data?.attempts ?? []).reduce((a, x) => a + (x.score ?? 0), 0);
+  const wrong = (data?.attempts ?? []).reduce((a, x) => a + ((x.total ?? 0) - (x.score ?? 0)), 0);
   const avg = data?.attempts.length
     ? Math.round(data.attempts.reduce((a, x) => a + x.percentage, 0) / data.attempts.length)
     : 0;
@@ -78,11 +83,13 @@ function StatsPage() {
 
   return (
     <AppShell title="📊 Statistics" subtitle="تقدمك الدراسي بالأرقام">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard icon={Timer} label="دقائق التركيز" value={String(minutes)} hint={`${data?.sessions.length ?? 0} جلسة`} />
         <StatCard icon={CheckCircle2} label="المهام المنجزة" value={`${doneTodos}/${totalTodos}`} />
         <StatCard icon={FileText} label="الامتحانات" value={String(data?.attempts.length ?? 0)} />
         <StatCard icon={BarChart3} label="متوسط النتائج" value={`${avg}%`} />
+        <StatCard icon={CheckCircle2} label="الإجابات الصحيحة" value={String(correct)} hint="من كل الامتحانات" />
+        <StatCard icon={XCircle} label="الإجابات الخاطئة" value={String(wrong)} hint="من كل الامتحانات" />
       </div>
 
       <div className="hub-card mt-5 p-5">
@@ -102,8 +109,33 @@ function StatsPage() {
       </div>
 
       <div className="hub-card mt-5 p-5">
+        <p className="font-display mb-4 font-bold">نتائج الامتحانات</p>
+        {!data?.attempts.length && (
+          <p className="text-sm text-muted-foreground">لم تحل أي امتحان بعد.</p>
+        )}
+        <div className="space-y-3">
+          {(data?.attempts ?? []).map((a, i) => (
+            <div key={i}>
+              <div className="mb-1 flex items-center justify-between text-xs font-bold">
+                <span className="truncate">
+                  {(a as { exams?: { name?: string } }).exams?.name ?? "امتحان"}
+                </span>
+                <span className="text-primary">
+                  {a.score}/{a.total} · {Math.round(a.percentage)}%
+                </span>
+              </div>
+              <Progress value={a.percentage} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="hub-card mt-5 p-5">
         <p className="font-display mb-2 font-bold">نسبة إنجاز المهام</p>
         <Progress value={totalTodos ? (doneTodos / totalTodos) * 100 : 0} />
+        <p className="mt-2 text-xs text-muted-foreground">
+          {doneTodos} من {totalTodos} مهمة مكتملة
+        </p>
       </div>
     </AppShell>
   );
