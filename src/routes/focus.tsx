@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Coffee, Pause, Play, RotateCcw, Timer } from "lucide-react";
+import { Coffee, Maximize2, Minimize2, Pause, Play, RotateCcw, Timer } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,7 +41,7 @@ function FocusPage() {
   });
   const [left, setLeft] = useState(25 * 60);
   const [running, setRunning] = useState(false);
-  const [subject, setSubject] = useState("");
+  const [fullscreen, setFullscreen] = useState(false);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const minutes = durations[mode];
@@ -51,7 +51,7 @@ function FocusPage() {
       const { error } = await supabase.from("study_sessions").insert({
         user_id: user!.id,
         minutes: mins,
-        mode: mode === "focus" ? subject || "focus" : mode,
+        mode,
       });
       if (error) throw error;
     },
@@ -153,6 +153,9 @@ function FocusPage() {
             >
               <RotateCcw className="mr-1 size-4" /> إعادة
             </Button>
+            <Button variant="outline" onClick={() => setFullscreen(true)}>
+              <Maximize2 className="mr-1 size-4" /> شاشة كاملة
+            </Button>
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-2 text-left">
@@ -170,13 +173,6 @@ function FocusPage() {
             ))}
           </div>
 
-          {mode === "focus" && (
-            <div className="mt-3 text-left">
-              <p className="mb-1 text-[11px] font-bold text-muted-foreground">المادة (اختياري)</p>
-              <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Math" />
-            </div>
-          )}
-
           <p className="mt-5 text-sm font-bold text-primary">إجمالي اليوم: {totalToday} دقيقة</p>
         </div>
 
@@ -191,6 +187,37 @@ function FocusPage() {
           ))}
         </div>
       </div>
+
+      {fullscreen && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-sidebar px-6 text-center text-sidebar-foreground">
+          <p className="text-sm font-bold tracking-[0.3em] uppercase opacity-70">
+            {MODES.find((m) => m.key === mode)?.labelAr}
+          </p>
+          <p className="text-gradient-gold font-display text-[22vw] leading-none font-extrabold tabular-nums md:text-[15vw]">
+            {mm}:{ss}
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button size="lg" className="gradient-gold font-bold" onClick={() => setRunning((r) => !r)}>
+              {running ? <Pause className="mr-1 size-4" /> : <Play className="mr-1 size-4" />}
+              {running ? "إيقاف مؤقت" : "ابدأ"}
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => {
+                setRunning(false);
+                setLeft(minutes * 60);
+              }}
+            >
+              <RotateCcw className="mr-1 size-4" /> إعادة
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => setFullscreen(false)}>
+              <Minimize2 className="mr-1 size-4" /> خروج
+            </Button>
+          </div>
+          <p className="text-sm font-bold text-gold">إجمالي اليوم: {totalToday} دقيقة</p>
+        </div>
+      )}
     </AppShell>
   );
 }
