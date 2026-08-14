@@ -57,14 +57,14 @@ function ExamsPage() {
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
         {exams?.map((e) => {
-          const best = attempts?.filter((a) => a.exam_id === e.id).map((a) => a.percentage) ?? [];
+          const mine = attempts?.filter((a) => a.exam_id === e.id) ?? [];
+          const best = mine.map((a) => a.percentage);
+          const solved = mine.length > 0;
           return (
             <article key={e.id} className="hub-card flex flex-col p-4">
               <div className="flex items-start justify-between">
                 <span className="text-2xl">{SUBJECT_EMOJI[e.subject] ?? "📘"}</span>
-                {best.length > 0 && (
-                  <Badge variant="secondary">أفضل نتيجة {Math.max(...best)}%</Badge>
-                )}
+                {solved && <Badge variant="secondary">نتيجتك {Math.max(...best)}%</Badge>}
               </div>
               <h3 className="font-display mt-3 font-bold">{e.name}</h3>
               {e.description && (
@@ -78,9 +78,13 @@ function ExamsPage() {
                   <Clock className="size-3.5" /> {e.duration_minutes} د
                 </span>
               </p>
-              <Button asChild className="gradient-gold mt-4 font-bold">
+              <Button
+                asChild
+                className={solved ? "mt-4 font-bold" : "gradient-gold mt-4 font-bold"}
+                variant={solved ? "outline" : "default"}
+              >
                 <Link to="/exams/$examId" params={{ examId: e.id }}>
-                  ابدأ الامتحان
+                  {solved ? "عرض نتيجتك" : "ابدأ الامتحان"}
                 </Link>
               </Button>
             </article>

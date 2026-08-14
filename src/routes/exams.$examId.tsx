@@ -34,22 +34,38 @@ function ExamRunner() {
   const [result, setResult] = useState<Result | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["exam", examId],
     queryFn: async () => {
-      const [{ data: exam, error: e1 }, { data: questions, error: e2 }] = await Promise.all([
-        supabase.from("exams").select("*").eq("id", examId).single(),
-        supabase.from("exam_questions").select("*").eq("exam_id", examId).order("position"),
-      ]);
+      const [{ data: exam, error: e1 }, { data: questions, error: e2 }, { data: attempt }] =
+        await Promise.all([
+          supabase.from("exams").select("*").eq("id", examId).single(),
+          supabase.from("exam_questions").select("*").eq("exam_id", examId).order("position"),
+          supabase
+            .from("exam_attempts")
+            .select("answers, score, total, percentage")
+            .eq("exam_id", examId)
+            .maybeSingle(),
+        ]);
       if (e1) throw e1;
       if (e2) throw e2;
-      return { exam, questions: questions ?? [] };
+      return { exam, questions: questions ?? [], attempt };
     },
   });
 
   useEffect(() => {
-    if (data?.exam && left === null) setLeft(data.exam.duration_minutes * 60);
-  }, [data, left]);
+    if (!data) return;
+    if (data.attempt && !result) {
+      setAnswers((data.attempt.answers as Record<string, string>) ?? {});
+      setResult({
+        score: data.attempt.score,
+        total: data.attempt.total,
+        percentage: data.attempt.percentage,
+      });
+      return;
+    }
+    if (data.exam && left === null && !data.attempt) setLeft(data.exam.duration_minutes * 60);
+  }, [data, left, result]);
 
   const submit = useMemo(
     () => async () => {
@@ -71,7 +87,11 @@ function ExamRunner() {
         total,
         percentage,
       });
-      if (error) toast.error(error.message);
+      if (error) {
+        toast.error(
+          error.code === "23505" ? "لقد حللت هذا الامتحان بالفعل" : error.message,
+        );
+      }
       setResult({ score, total, percentage });
       setSubmitting(false);
     },
@@ -88,7 +108,7 @@ function ExamRunner() {
     return () => clearTimeout(t);
   }, [left, result, submit]);
 
-  if (!data?.exam) {
+  if (isLoading || !data?.exam) {
     return (
       <AppShell title="جاري التحميل…">
         <p className="text-sm text-muted-foreground">جاري تحميل الامتحان…</p>
@@ -120,6 +140,45 @@ function ExamRunner() {
               الإحصائيات
             </Button>
           </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            🔒 هذا الامتحان يُحل مرة واحدة فقط — بالأسفل إجاباتك والإجابات الصحيحة.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-5 max-w-2xl space-y-3">
+          {data.questions.map((q, i) => {
+            const given = (answers[q.id] ?? "").trim();
+            const ok = given.toLowerCase() === q.correct_answer.trim().toLowerCase();
+            return (
+              <article key={q.id} className="hub-card p-4">
+                <p className="font-display font-bold">
+                  {i + 1}. {q.question_text}
+                </p>
+                <p className={ok ? "mt-2 text-sm font-bold text-primary" : "mt-2 text-sm font-bold text-destructive"}>
+                  {ok ? "✅" : "❌"} إجابتك: {given || "بدون إجابة"}
+                </p>
+                {!ok && (
+                  <p className="mt-1 text-sm font-bold text-primary">
+                    ✔️ الإجابة الصحيحة: {q.correct_answer}
+                  </p>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (data.exam.status === "ended") {
+    return (
+      <AppShell title={data.exam.name} subtitle="هذا الامتحان منتهي">
+        <div className="hub-card mx-auto max-w-md p-8 text-center">
+          <XCircle className="mx-auto size-10 text-destructive" />
+          <p className="font-display mt-3 text-lg font-bold">🔒 تم إنهاء هذا الامتحان</p>
+          <Button className="gradient-gold mt-4 font-bold" onClick={() => navigate({ to: "/exams" })}>
+            كل الامتحانات
+          </Button>
         </div>
       </AppShell>
     );
