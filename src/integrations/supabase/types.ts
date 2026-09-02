@@ -111,6 +111,7 @@ export type Database = {
           correct_answer: string
           created_at: string
           exam_id: string
+          explanation: string | null
           id: string
           image_url: string | null
           options: Json
@@ -123,6 +124,7 @@ export type Database = {
           correct_answer: string
           created_at?: string
           exam_id: string
+          explanation?: string | null
           id?: string
           image_url?: string | null
           options?: Json
@@ -135,6 +137,7 @@ export type Database = {
           correct_answer?: string
           created_at?: string
           exam_id?: string
+          explanation?: string | null
           id?: string
           image_url?: string | null
           options?: Json
@@ -192,6 +195,7 @@ export type Database = {
           file_type: string
           id: string
           subject: string
+          thumbnail_url: string | null
           title: string
           url: string
         }
@@ -203,6 +207,7 @@ export type Database = {
           file_type: string
           id?: string
           subject: string
+          thumbnail_url?: string | null
           title: string
           url: string
         }
@@ -214,6 +219,7 @@ export type Database = {
           file_type?: string
           id?: string
           subject?: string
+          thumbnail_url?: string | null
           title?: string
           url?: string
         }
