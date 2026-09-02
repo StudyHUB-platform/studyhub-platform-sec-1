@@ -67,14 +67,17 @@ function Picker({
 /* ---------------- Library management ---------------- */
 export function LibraryAdmin() {
   const qc = useQueryClient();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string>(LIBRARY_CATEGORIES[0]);
   const [subject, setSubject] = useState<string>(ALL_SUBJECTS[0]!);
   const [fileType, setFileType] = useState<string>(FILE_TYPES[0]);
   const [link, setLink] = useState("");
+  const [thumbnail, setThumbnail] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const getVideoMeta = useServerFn(fetchYouTubeVideo);
 
   const { data: items } = useQuery({
     queryKey: ["admin-library"],
@@ -88,7 +91,35 @@ export function LibraryAdmin() {
     },
   });
 
-  const add = async () => {
+  const reset = () => {
+    setEditingId(null);
+    setTitle("");
+    setDescription("");
+    setLink("");
+    setThumbnail("");
+    setFile(null);
+  };
+
+  const invalidate = () => {
+    void qc.invalidateQueries({ queryKey: ["admin-library"] });
+    void qc.invalidateQueries({ queryKey: ["library"] });
+  };
+
+  const autoFillYouTube = async (url: string) => {
+    if (!isYouTubeUrl(url)) return;
+    try {
+      const meta = await getVideoMeta({ data: { url } });
+      if (meta.title && !title.trim()) setTitle(meta.title);
+      setThumbnail(meta.thumbnail || youTubeThumbnail(url) || "");
+      if (fileType !== "Video") setFileType("Video");
+      toast.success("تم جلب بيانات الفيديو من يوتيوب");
+    } catch {
+      const fallback = youTubeThumbnail(url);
+      if (fallback) setThumbnail(fallback);
+    }
+  };
+
+  const save = async () => {
     if (!title.trim()) {
       toast.error("اكتب عنوان الملف");
       return;
@@ -96,29 +127,30 @@ export function LibraryAdmin() {
     setBusy(true);
     try {
       let url = link.trim();
-      if (fileType !== "Link") {
-        if (!file && !url) throw new Error("ارفع ملف أو ضع رابط");
-        if (file) url = await uploadLibraryFile(file);
-      }
-      if (!url) throw new Error("الرابط مطلوب");
-      const { error } = await supabase.from("library_items").insert({
+      if (file) url = await uploadLibraryFile(file);
+      if (!url && !editingId) throw new Error("ارفع ملف أو ضع رابط");
+      const values = {
         title: title.trim(),
         description: description.trim() || null,
         category,
         subject,
         file_type: fileType,
-        url,
-      });
-      if (error) throw error;
-      toast.success("تم إضافة الملف للمكتبة");
-      setTitle("");
-      setDescription("");
-      setLink("");
-      setFile(null);
-      void qc.invalidateQueries({ queryKey: ["admin-library"] });
-      void qc.invalidateQueries({ queryKey: ["library"] });
+        thumbnail_url: thumbnail.trim() || (url ? youTubeThumbnail(url) : null),
+        ...(url ? { url } : {}),
+      };
+      if (editingId) {
+        const { error } = await supabase.from("library_items").update(values).eq("id", editingId);
+        if (error) throw error;
+        toast.success("تم تحديث المحتوى");
+      } else {
+        const { error } = await supabase.from("library_items").insert({ ...values, url });
+        if (error) throw error;
+        toast.success("تم إضافة الملف للمكتبة");
+      }
+      reset();
+      invalidate();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "فشل الإضافة");
+      toast.error(e instanceof Error ? e.message : "فشل الحفظ");
     } finally {
       setBusy(false);
     }
@@ -130,15 +162,15 @@ export function LibraryAdmin() {
       if (error) throw error;
     },
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ["admin-library"] });
-      void qc.invalidateQueries({ queryKey: ["library"] });
+      reset();
+      invalidate();
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   return (
     <div className="space-y-4">
-      <Section title="📤 إضافة ملف جديد للمكتبة">
+      <Section title={editingId ? "✏️ تعديل محتوى المكتبة" : "📤 إضافة ملف جديد للمكتبة"}>
         <div className="grid gap-3 md:grid-cols-2">
           <Field label="العنوان">
             <Input value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -160,9 +192,26 @@ export function LibraryAdmin() {
           <Field label="الوصف">
             <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
           </Field>
-          {fileType === "Link" ? (
-            <Field label="الرابط">
-              <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://…" />
+          {fileType === "Link" || fileType === "Video" ? (
+            <Field label="الرابط (فيديو يوتيوب يجلب الصورة والعنوان تلقائياً)">
+              <div className="space-y-2">
+                <Input
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                  onBlur={() => void autoFillYouTube(link.trim())}
+                  placeholder="https://youtube.com/watch?v=…"
+                />
+                {isYouTubeUrl(link) && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => void autoFillYouTube(link.trim())}
+                  >
+                    <Youtube className="mr-1 size-4 text-destructive" /> جلب بيانات الفيديو
+                  </Button>
+                )}
+              </div>
             </Field>
           ) : (
             <Field label="الملف (أو رابط خارجي)">
@@ -172,10 +221,23 @@ export function LibraryAdmin() {
               </div>
             </Field>
           )}
+          <Field label="صورة مصغّرة (Thumbnail)">
+            <Input value={thumbnail} onChange={(e) => setThumbnail(e.target.value)} placeholder="https://…" />
+          </Field>
         </div>
-        <Button className="gradient-gold font-bold" disabled={busy} onClick={() => void add()}>
-          <Upload className="mr-1 size-4" /> إضافة
-        </Button>
+        {thumbnail && (
+          <img src={thumbnail} alt="معاينة" className="max-h-40 rounded-xl border border-border" />
+        )}
+        <div className="flex gap-2">
+          <Button className="gradient-gold font-bold" disabled={busy} onClick={() => void save()}>
+            <Upload className="mr-1 size-4" /> {editingId ? "حفظ التعديل" : "إضافة"}
+          </Button>
+          {editingId && (
+            <Button variant="outline" onClick={reset}>
+              إلغاء
+            </Button>
+          )}
+        </div>
       </Section>
 
       <Section title={`📚 الملفات (${items?.length ?? 0})`}>
@@ -183,12 +245,37 @@ export function LibraryAdmin() {
           {!items?.length && <p className="text-sm text-muted-foreground">لا توجد ملفات.</p>}
           {items?.map((i) => (
             <div key={i.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
+              {i.thumbnail_url && (
+                <img
+                  src={i.thumbnail_url}
+                  alt=""
+                  className="h-12 w-20 rounded-lg object-cover"
+                  loading="lazy"
+                />
+              )}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold">{i.title}</p>
                 <p className="text-xs text-muted-foreground">
                   {i.category} · {i.subject} · {i.file_type}
                 </p>
               </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => {
+                  setEditingId(i.id);
+                  setTitle(i.title);
+                  setDescription(i.description ?? "");
+                  setCategory(i.category);
+                  setSubject(i.subject);
+                  setFileType(i.file_type);
+                  setLink(i.url.startsWith("sb://") ? "" : i.url);
+                  setThumbnail(i.thumbnail_url ?? "");
+                  setFile(null);
+                }}
+              >
+                <Pencil className="size-4" />
+              </Button>
               <Button size="icon" variant="ghost" onClick={() => remove.mutate(i.id)}>
                 <Trash2 className="size-4 text-destructive" />
               </Button>
