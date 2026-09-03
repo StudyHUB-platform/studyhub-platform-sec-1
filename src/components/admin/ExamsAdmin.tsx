@@ -5,6 +5,8 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { ALL_SUBJECTS } from "@/lib/hub";
+import { uploadLibraryFile } from "@/lib/storage";
+import { LibraryImage } from "@/components/LibraryImage";
 import { Section } from "./AdminSections";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 const STATUS_AR: Record<string, string> = {
   draft: "📄 مسودة",
   published: "✅ منشور",
-  ended: "🔒 منتهي",
+  ended: "🔴 انتهى — مغلق",
 };
 
 export function ExamsAdmin() {
