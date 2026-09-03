@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveLibraryUrl } from "@/lib/storage";
+import { isYouTubeUrl, youTubeThumbnail } from "@/lib/youtube";
 import {
   CORE_SUBJECTS,
   FILE_TYPES,
