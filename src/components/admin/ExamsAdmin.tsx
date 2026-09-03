@@ -84,6 +84,28 @@ export function ExamsAdmin() {
     },
   });
 
+  const { data: attempts } = useQuery({
+    queryKey: ["admin-attempts", selected],
+    enabled: !!selected,
+    queryFn: async () => {
+      const [{ data: rows, error }, { data: people }] = await Promise.all([
+        supabase
+          .from("exam_attempts")
+          .select("id, user_id, score, total, percentage, created_at")
+          .eq("exam_id", selected!)
+          .order("percentage", { ascending: false }),
+        supabase.from("profiles").select("id, full_name, email, phone"),
+      ]);
+      if (error) throw error;
+      return (rows ?? []).map((r) => ({
+        ...r,
+        student: people?.find((p) => p.id === r.user_id),
+      }));
+    },
+  });
+
+
+
   const resetExamForm = () => {
     setName("");
     setDescription("");
