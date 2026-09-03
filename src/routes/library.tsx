@@ -261,7 +261,8 @@ function LibraryPage() {
               )}
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
     </AppShell>
   );
