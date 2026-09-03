@@ -293,11 +293,14 @@ export function LibraryAdmin() {
 /* ---------------- Teachers ---------------- */
 export function TeachersAdmin() {
   const qc = useQueryClient();
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [subject, setSubject] = useState<string>(ALL_SUBJECTS[0]!);
   const [name, setName] = useState("");
   const [teacher, setTeacher] = useState("");
   const [url, setUrl] = useState("");
   const [image, setImage] = useState("");
+  const [fetching, setFetching] = useState(false);
+  const getChannel = useServerFn(fetchYouTubeChannel);
 
   const { data } = useQuery({
     queryKey: ["admin-teachers"],
@@ -308,24 +311,56 @@ export function TeachersAdmin() {
     },
   });
 
-  const add = useMutation({
+  const reset = () => {
+    setEditingId(null);
+    setName("");
+    setTeacher("");
+    setUrl("");
+    setImage("");
+  };
+
+  const invalidate = () => {
+    void qc.invalidateQueries({ queryKey: ["admin-teachers"] });
+    void qc.invalidateQueries({ queryKey: ["teachers"] });
+  };
+
+  const autoFetch = async () => {
+    if (!url.trim()) return;
+    setFetching(true);
+    try {
+      const meta = await getChannel({ data: { url: url.trim() } });
+      setName(meta.title);
+      if (meta.thumbnail) setImage(meta.thumbnail);
+      toast.success("تم جلب بيانات القناة من يوتيوب");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "تعذر جلب بيانات القناة");
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("teachers").insert({
+      const values = {
         subject,
         channel_name: name.trim(),
         teacher_name: teacher.trim() || null,
         channel_url: url.trim(),
         image_url: image.trim() || null,
-      });
-      if (error) throw error;
+      };
+      if (editingId) {
+        const { error } = await supabase.from("teachers").update(values).eq("id", editingId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("teachers").insert(values);
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
-      setName("");
-      setTeacher("");
-      setUrl("");
-      setImage("");
-      void qc.invalidateQueries({ queryKey: ["admin-teachers"] });
-      void qc.invalidateQueries({ queryKey: ["teachers"] });
+      const wasEdit = Boolean(editingId);
+      reset();
+      invalidate();
+      toast.success(wasEdit ? "تم تحديث المعلم" : "تم إضافة المعلم");
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -336,17 +371,37 @@ export function TeachersAdmin() {
       if (error) throw error;
     },
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: ["admin-teachers"] });
-      void qc.invalidateQueries({ queryKey: ["teachers"] });
+      reset();
+      invalidate();
     },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   return (
     <div className="space-y-4">
-      <Section title="👨‍🏫 إضافة معلم / قناة">
+      <Section title={editingId ? "✏️ تعديل معلم / قناة" : "👨‍🏫 إضافة معلم / قناة"}>
         <div className="grid gap-3 md:grid-cols-2">
           <Field label="المادة">
             <Picker value={subject} onChange={setSubject} options={ALL_SUBJECTS} />
+          </Field>
+          <Field label="رابط القناة على يوتيوب">
+            <div className="space-y-2">
+              <Input
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://youtube.com/@channel"
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                disabled={fetching || !url.trim()}
+                onClick={() => void autoFetch()}
+              >
+                <Youtube className="mr-1 size-4 text-destructive" />
+                {fetching ? "جاري الجلب…" : "جلب اسم وصورة القناة تلقائياً"}
+              </Button>
+            </div>
           </Field>
           <Field label="اسم القناة">
             <Input value={name} onChange={(e) => setName(e.target.value)} />
@@ -354,26 +409,40 @@ export function TeachersAdmin() {
           <Field label="اسم المعلم">
             <Input value={teacher} onChange={(e) => setTeacher(e.target.value)} />
           </Field>
-          <Field label="رابط القناة">
-            <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://youtube.com/…" />
-          </Field>
-          <Field label="صورة القناة على يوتيوب (رابط)">
+          <Field label="صورة القناة (رابط)">
             <Input value={image} onChange={(e) => setImage(e.target.value)} placeholder="https://…" />
           </Field>
         </div>
-        <Button
-          className="gradient-gold font-bold"
-          disabled={!name.trim() || !url.trim()}
-          onClick={() => add.mutate()}
-        >
-          <Plus className="mr-1 size-4" /> إضافة
-        </Button>
+        {image && (
+          <img
+            src={image}
+            alt="صورة القناة"
+            className="size-20 rounded-full border border-border object-cover"
+          />
+        )}
+        <div className="flex gap-2">
+          <Button
+            className="gradient-gold font-bold"
+            disabled={!name.trim() || !url.trim()}
+            onClick={() => save.mutate()}
+          >
+            <Plus className="mr-1 size-4" /> {editingId ? "حفظ التعديل" : "إضافة"}
+          </Button>
+          {editingId && (
+            <Button variant="outline" onClick={reset}>
+              إلغاء
+            </Button>
+          )}
+        </div>
       </Section>
 
       <Section title={`القائمة (${data?.length ?? 0})`}>
         <div className="space-y-2">
           {data?.map((t) => (
             <div key={t.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
+              {t.image_url && (
+                <img src={t.image_url} alt="" className="size-10 rounded-full object-cover" loading="lazy" />
+              )}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold">{t.channel_name}</p>
                 {t.teacher_name && (
@@ -381,6 +450,20 @@ export function TeachersAdmin() {
                 )}
                 <p className="text-xs text-muted-foreground">{t.subject}</p>
               </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={() => {
+                  setEditingId(t.id);
+                  setSubject(t.subject);
+                  setName(t.channel_name);
+                  setTeacher(t.teacher_name ?? "");
+                  setUrl(t.channel_url);
+                  setImage(t.image_url ?? "");
+                }}
+              >
+                <Pencil className="size-4" />
+              </Button>
               <Button size="icon" variant="ghost" onClick={() => remove.mutate(t.id)}>
                 <Trash2 className="size-4 text-destructive" />
               </Button>
