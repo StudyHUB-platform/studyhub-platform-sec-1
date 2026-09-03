@@ -1,10 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useState, type ReactNode } from "react";
-import { Pencil, Plus, Trash2, Upload } from "lucide-react";
+import { Pencil, Plus, Trash2, Upload, Youtube } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { uploadLibraryFile } from "@/lib/storage";
+import { isYouTubeUrl, youTubeThumbnail } from "@/lib/youtube";
+import { fetchYouTubeChannel, fetchYouTubeVideo } from "@/lib/youtube.functions";
 import {
   ALL_SUBJECTS,
   COMMUNITY_PLATFORMS,
