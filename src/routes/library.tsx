@@ -205,8 +205,27 @@ function LibraryPage() {
       )}
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
+        {items.map((item) => {
+          const thumb = item.thumbnail_url ?? youTubeThumbnail(item.url);
+          return (
           <article key={item.id} className="hub-card flex flex-col p-4">
+            {thumb && (
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  void open(item.url);
+                }}
+                className="relative mb-3 block overflow-hidden rounded-xl"
+              >
+                <img src={thumb} alt={item.title} className="aspect-video w-full object-cover" loading="lazy" />
+                {isYouTubeUrl(item.url) && (
+                  <span className="absolute inset-0 flex items-center justify-center bg-black/25 text-3xl">
+                    ▶️
+                  </span>
+                )}
+              </a>
+            )}
             <div className="flex items-start justify-between gap-2">
               <span className="text-2xl">{FILE_TYPE_EMOJI[item.file_type] ?? "📁"}</span>
               <Badge variant="secondary" className="text-[10px]">
