@@ -35,11 +35,27 @@ export function ExamsAdmin() {
   const [correct, setCorrect] = useState("");
   const [points, setPoints] = useState(1);
   const [imageUrl, setImageUrl] = useState("");
+  const [explanation, setExplanation] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
 
   const invalidate = () => {
     void qc.invalidateQueries({ queryKey: ["admin-exams"] });
     void qc.invalidateQueries({ queryKey: ["exams"] });
     void qc.invalidateQueries({ queryKey: ["admin-questions", selected] });
+    void qc.invalidateQueries({ queryKey: ["admin-attempts", selected] });
+  };
+
+  const uploadQuestionImage = async (file: File) => {
+    setUploadingImage(true);
+    try {
+      setImageUrl(await uploadLibraryFile(file));
+      toast.success("تم رفع صورة السؤال");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "فشل رفع الصورة");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const { data: exams } = useQuery({
