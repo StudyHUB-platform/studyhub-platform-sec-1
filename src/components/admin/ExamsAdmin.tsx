@@ -336,11 +336,24 @@ export function ExamsAdmin() {
       </Section>
 
       {selected && (
-        <Section title="➕ إضافة سؤال">
+        <Section title={editingQuestion ? "✏️ تعديل السؤال" : "➕ إضافة سؤال"}>
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-1.5 md:col-span-2">
-              <Label className="text-xs">نص السؤال</Label>
-              <Textarea value={qText} onChange={(e) => setQText(e.target.value)} rows={2} />
+              <Label className="text-xs">نص السؤال (أو الصقه كصورة Ctrl+V هنا)</Label>
+              <Textarea
+                value={qText}
+                onChange={(e) => setQText(e.target.value)}
+                rows={2}
+                onPaste={(e) => {
+                  const img = Array.from(e.clipboardData.files).find((f) =>
+                    f.type.startsWith("image/"),
+                  );
+                  if (img) {
+                    e.preventDefault();
+                    void uploadQuestionImage(img);
+                  }
+                }}
+              />
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">نوع السؤال</Label>
@@ -376,28 +389,102 @@ export function ExamsAdmin() {
             )}
             <div className="space-y-1.5">
               <Label className="text-xs">الإجابة الصحيحة</Label>
-              <Input value={correct} onChange={(e) => setCorrect(e.target.value)} />
+              {qType === "written" ? (
+                <Input value={correct} onChange={(e) => setCorrect(e.target.value)} />
+              ) : (
+                <Select value={correct} onValueChange={setCorrect}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="اختر الإجابة الصحيحة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options
+                      .split("\n")
+                      .map((o) => o.trim())
+                      .filter(Boolean)
+                      .map((o) => (
+                        <SelectItem key={o} value={o}>
+                          {o}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs">صورة للسؤال (رابط، اختياري)</Label>
-              <Input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+              <Label className="text-xs">صورة للسؤال (رفع أو لصق أو رابط — اختياري)</Label>
+              <div className="space-y-2">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  disabled={uploadingImage}
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void uploadQuestionImage(f);
+                  }}
+                />
+                <Input
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="أو رابط صورة https://…"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5 md:col-span-2">
+              <Label className="text-xs">شرح / سبب الإجابة (اختياري — يظهر للطالب بعد التسليم)</Label>
+              <Textarea
+                value={explanation}
+                onChange={(e) => setExplanation(e.target.value)}
+                rows={2}
+              />
             </div>
           </div>
-          <Button
-            className="gradient-gold font-bold"
-            disabled={!qText.trim() || !correct.trim()}
-            onClick={() => addQuestion.mutate()}
-          >
-            <Plus className="mr-1 size-4" /> إضافة السؤال
-          </Button>
+          {imageUrl && (
+            <div className="rounded-xl border border-border p-2">
+              {imageUrl.startsWith("sb://") ? (
+                <LibraryImage url={imageUrl} alt="صورة السؤال" className="max-h-40 rounded-lg" />
+              ) : (
+                <img src={imageUrl} alt="صورة السؤال" className="max-h-40 rounded-lg" />
+              )}
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button
+              className="gradient-gold font-bold"
+              disabled={(!qText.trim() && !imageUrl.trim()) || !correct.trim() || uploadingImage}
+              onClick={() => addQuestion.mutate()}
+            >
+              <Plus className="mr-1 size-4" /> {editingQuestion ? "حفظ التعديل" : "إضافة السؤال"}
+            </Button>
+            {editingQuestion && (
+              <Button variant="outline" onClick={resetQuestionForm}>
+                إلغاء
+              </Button>
+            )}
+          </div>
 
           <div className="mt-3 space-y-2">
             {questions?.map((q, i) => (
               <div key={q.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
                 <p className="min-w-0 flex-1 truncate text-sm">
-                  {i + 1}. {q.question_text}
+                  {i + 1}. {q.question_text || "📷 سؤال بصورة"}
                 </p>
                 <span className="text-xs text-muted-foreground">{q.points} د</span>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => {
+                    setEditingQuestion(q.id);
+                    setQText(q.question_text);
+                    setQType(q.question_type);
+                    setOptions(Array.isArray(q.options) ? (q.options as string[]).join("\n") : "");
+                    setCorrect(q.correct_answer);
+                    setPoints(q.points);
+                    setImageUrl(q.image_url ?? "");
+                    setExplanation(q.explanation ?? "");
+                  }}
+                >
+                  <Pencil className="size-4" />
+                </Button>
                 <Button size="icon" variant="ghost" onClick={() => removeQuestion.mutate(q.id)}>
                   <Trash2 className="size-4 text-destructive" />
                 </Button>
