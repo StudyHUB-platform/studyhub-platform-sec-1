@@ -167,6 +167,15 @@ export function ExamsAdmin() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const resetQuestionForm = () => {
+    setQText("");
+    setOptions("");
+    setCorrect("");
+    setImageUrl("");
+    setExplanation("");
+    setEditingQuestion(null);
+  };
+
   const addQuestion = useMutation({
     mutationFn: async () => {
       const opts =
@@ -176,24 +185,35 @@ export function ExamsAdmin() {
               .split("\n")
               .map((o) => o.trim())
               .filter(Boolean);
-      const { error } = await supabase.from("exam_questions").insert({
-        exam_id: selected!,
+      const values = {
         question_text: qText.trim(),
         question_type: qType,
         options: opts,
         correct_answer: correct.trim(),
         points,
-        position: (questions?.length ?? 0) + 1,
         image_url: imageUrl.trim() || null,
+        explanation: explanation.trim() || null,
+      };
+      if (editingQuestion) {
+        const { error } = await supabase
+          .from("exam_questions")
+          .update(values)
+          .eq("id", editingQuestion);
+        if (error) throw error;
+        return;
+      }
+      const { error } = await supabase.from("exam_questions").insert({
+        ...values,
+        exam_id: selected!,
+        position: (questions?.length ?? 0) + 1,
       });
       if (error) throw error;
     },
     onSuccess: () => {
-      setQText("");
-      setOptions("");
-      setCorrect("");
-      setImageUrl("");
+      const wasEdit = Boolean(editingQuestion);
+      resetQuestionForm();
       invalidate();
+      toast.success(wasEdit ? "تم تحديث السؤال" : "تم إضافة السؤال");
     },
     onError: (e: Error) => toast.error(e.message),
   });
