@@ -5,6 +5,7 @@ import { CheckCircle2, Clock, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
+import { LibraryImage } from "@/components/LibraryImage";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -162,6 +163,17 @@ function ExamRunner() {
                     ✔️ الإجابة الصحيحة: {q.correct_answer}
                   </p>
                 )}
+                {q.image_url &&
+                  (q.image_url.startsWith("sb://") ? (
+                    <LibraryImage url={q.image_url} alt="صورة السؤال" className="mt-3 max-h-64 rounded-xl" />
+                  ) : (
+                    <img src={q.image_url} alt="صورة السؤال" className="mt-3 max-h-64 rounded-xl" loading="lazy" />
+                  ))}
+                {q.explanation && (
+                  <p className="mt-2 rounded-xl bg-accent p-3 text-sm text-accent-foreground">
+                    💡 الشرح: {q.explanation}
+                  </p>
+                )}
               </article>
             );
           })}
@@ -210,9 +222,12 @@ function ExamRunner() {
               <p className="font-display font-bold">
                 {i + 1}. {q.question_text}
               </p>
-              {q.image_url && (
-                <img src={q.image_url} alt="صورة السؤال" className="mt-3 max-h-64 rounded-xl" loading="lazy" />
-              )}
+              {q.image_url &&
+                (q.image_url.startsWith("sb://") ? (
+                  <LibraryImage url={q.image_url} alt="صورة السؤال" className="mt-3 max-h-64 rounded-xl" />
+                ) : (
+                  <img src={q.image_url} alt="صورة السؤال" className="mt-3 max-h-64 rounded-xl" loading="lazy" />
+                ))}
               {q.question_type === "written" ? (
                 <Input
                   className="mt-3"

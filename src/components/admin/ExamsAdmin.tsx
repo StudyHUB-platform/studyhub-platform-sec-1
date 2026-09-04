@@ -493,6 +493,36 @@ export function ExamsAdmin() {
           </div>
         </Section>
       )}
+
+      {selected && (
+        <Section title={`🎓 الطلاب الذين حلوا الامتحان (${attempts?.length ?? 0})`}>
+          {!attempts?.length ? (
+            <p className="text-sm text-muted-foreground">لا يوجد طلاب حلوا هذا الامتحان بعد.</p>
+          ) : (
+            <div className="space-y-2">
+              {attempts.map((a) => (
+                <div key={a.id} className="flex items-center gap-3 rounded-xl border border-border p-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold">{a.student?.full_name ?? "طالب"}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      📧 {a.student?.email ?? "—"} · 📱 {a.student?.phone ?? "—"}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground">
+                      📅 {new Date(a.created_at).toLocaleString("ar-EG")}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-display text-lg font-extrabold text-primary">{a.percentage}%</p>
+                    <p className="text-xs text-muted-foreground">
+                      {a.score} / {a.total}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Section>
+      )}
     </div>
   );
 }
