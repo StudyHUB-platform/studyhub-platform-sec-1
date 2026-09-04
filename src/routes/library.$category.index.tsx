@@ -13,7 +13,7 @@ import {
   SUBJECT_EMOJI,
 } from "@/lib/hub";
 
-export const Route = createFileRoute("/library/$category")({
+export const Route = createFileRoute("/library/$category/")({
   head: () => ({
     meta: [
       { title: "مواد القسم — Study HUB Library" },
