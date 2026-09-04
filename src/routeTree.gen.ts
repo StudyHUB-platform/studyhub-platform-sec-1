@@ -29,6 +29,10 @@ import { Route as TranslatorRouteImport } from './routes/translator'
 import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
+import { Route as LibraryIndexRouteImport } from './routes/library.index'
+import { Route as LibraryCategoryIndexRouteImport } from './routes/library.$category.index'
+import { Route as LibraryCategorySubjectIndexRouteImport } from './routes/library.$category.$subject.index'
+import { Route as LibraryCategorySubjectFileTypeRouteImport } from './routes/library.$category.$subject.$fileType'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -130,6 +134,28 @@ const ExamsExamIdRoute = ExamsExamIdRouteImport.update({
   path: '/$examId',
   getParentRoute: () => ExamsRoute,
 } as any)
+const LibraryIndexRoute = LibraryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LibraryRoute,
+} as any)
+const LibraryCategoryIndexRoute = LibraryCategoryIndexRouteImport.update({
+  id: '/$category/',
+  path: '/$category/',
+  getParentRoute: () => LibraryRoute,
+} as any)
+const LibraryCategorySubjectIndexRoute =
+  LibraryCategorySubjectIndexRouteImport.update({
+    id: '/$category/$subject/',
+    path: '/$category/$subject/',
+    getParentRoute: () => LibraryRoute,
+  } as any)
+const LibraryCategorySubjectFileTypeRoute =
+  LibraryCategorySubjectFileTypeRouteImport.update({
+    id: '/$category/$subject/$fileType',
+    path: '/$category/$subject/$fileType',
+    getParentRoute: () => LibraryRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -141,7 +167,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/exams': typeof ExamsRouteWithChildren
   '/focus': typeof FocusRoute
-  '/library': typeof LibraryRoute
+  '/library': typeof LibraryRouteWithChildren
   '/notes': typeof NotesRoute
   '/profile': typeof ProfileRoute
   '/statistics': typeof StatisticsRoute
@@ -152,6 +178,10 @@ export interface FileRoutesByFullPath {
   '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
+  '/library/': typeof LibraryIndexRoute
+  '/library/$category/': typeof LibraryCategoryIndexRoute
+  '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -162,7 +192,6 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/focus': typeof FocusRoute
-  '/library': typeof LibraryRoute
   '/notes': typeof NotesRoute
   '/profile': typeof ProfileRoute
   '/statistics': typeof StatisticsRoute
@@ -173,6 +202,10 @@ export interface FileRoutesByTo {
   '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams': typeof ExamsIndexRoute
+  '/library': typeof LibraryIndexRoute
+  '/library/$category': typeof LibraryCategoryIndexRoute
+  '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/library/$category/$subject': typeof LibraryCategorySubjectIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -185,7 +218,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/exams': typeof ExamsRouteWithChildren
   '/focus': typeof FocusRoute
-  '/library': typeof LibraryRoute
+  '/library': typeof LibraryRouteWithChildren
   '/notes': typeof NotesRoute
   '/profile': typeof ProfileRoute
   '/statistics': typeof StatisticsRoute
@@ -196,6 +229,10 @@ export interface FileRoutesById {
   '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
+  '/library/': typeof LibraryIndexRoute
+  '/library/$category/': typeof LibraryCategoryIndexRoute
+  '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -220,6 +257,10 @@ export interface FileRouteTypes {
     | '/updates'
     | '/exams/$examId'
     | '/exams/'
+    | '/library/'
+    | '/library/$category/'
+    | '/library/$category/$subject/$fileType'
+    | '/library/$category/$subject/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -230,7 +271,6 @@ export interface FileRouteTypes {
     | '/community'
     | '/dashboard'
     | '/focus'
-    | '/library'
     | '/notes'
     | '/profile'
     | '/statistics'
@@ -241,6 +281,10 @@ export interface FileRouteTypes {
     | '/updates'
     | '/exams/$examId'
     | '/exams'
+    | '/library'
+    | '/library/$category'
+    | '/library/$category/$subject/$fileType'
+    | '/library/$category/$subject'
   id:
     | '__root__'
     | '/'
@@ -263,6 +307,10 @@ export interface FileRouteTypes {
     | '/updates'
     | '/exams/$examId'
     | '/exams/'
+    | '/library/'
+    | '/library/$category/'
+    | '/library/$category/$subject/$fileType'
+    | '/library/$category/$subject/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -275,7 +323,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   ExamsRoute: typeof ExamsRouteWithChildren
   FocusRoute: typeof FocusRoute
-  LibraryRoute: typeof LibraryRoute
+  LibraryRoute: typeof LibraryRouteWithChildren
   NotesRoute: typeof NotesRoute
   ProfileRoute: typeof ProfileRoute
   StatisticsRoute: typeof StatisticsRoute
@@ -428,6 +476,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExamsExamIdRouteImport
       parentRoute: typeof ExamsRoute
     }
+    '/library/': {
+      id: '/library/'
+      path: '/'
+      fullPath: '/library/'
+      preLoaderRoute: typeof LibraryIndexRouteImport
+      parentRoute: typeof LibraryRoute
+    }
+    '/library/$category/': {
+      id: '/library/$category/'
+      path: '/$category'
+      fullPath: '/library/$category/'
+      preLoaderRoute: typeof LibraryCategoryIndexRouteImport
+      parentRoute: typeof LibraryRoute
+    }
+    '/library/$category/$subject/': {
+      id: '/library/$category/$subject/'
+      path: '/$category/$subject'
+      fullPath: '/library/$category/$subject/'
+      preLoaderRoute: typeof LibraryCategorySubjectIndexRouteImport
+      parentRoute: typeof LibraryRoute
+    }
+    '/library/$category/$subject/$fileType': {
+      id: '/library/$category/$subject/$fileType'
+      path: '/$category/$subject/$fileType'
+      fullPath: '/library/$category/$subject/$fileType'
+      preLoaderRoute: typeof LibraryCategorySubjectFileTypeRouteImport
+      parentRoute: typeof LibraryRoute
+    }
   }
 }
 
@@ -443,6 +519,23 @@ const ExamsRouteChildren: ExamsRouteChildren = {
 
 const ExamsRouteWithChildren = ExamsRoute._addFileChildren(ExamsRouteChildren)
 
+interface LibraryRouteChildren {
+  LibraryIndexRoute: typeof LibraryIndexRoute
+  LibraryCategoryIndexRoute: typeof LibraryCategoryIndexRoute
+  LibraryCategorySubjectFileTypeRoute: typeof LibraryCategorySubjectFileTypeRoute
+  LibraryCategorySubjectIndexRoute: typeof LibraryCategorySubjectIndexRoute
+}
+
+const LibraryRouteChildren: LibraryRouteChildren = {
+  LibraryIndexRoute: LibraryIndexRoute,
+  LibraryCategoryIndexRoute: LibraryCategoryIndexRoute,
+  LibraryCategorySubjectFileTypeRoute: LibraryCategorySubjectFileTypeRoute,
+  LibraryCategorySubjectIndexRoute: LibraryCategorySubjectIndexRoute,
+}
+
+const LibraryRouteWithChildren =
+  LibraryRoute._addFileChildren(LibraryRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -453,7 +546,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   ExamsRoute: ExamsRouteWithChildren,
   FocusRoute: FocusRoute,
-  LibraryRoute: LibraryRoute,
+  LibraryRoute: LibraryRouteWithChildren,
   NotesRoute: NotesRoute,
   ProfileRoute: ProfileRoute,
   StatisticsRoute: StatisticsRoute,
