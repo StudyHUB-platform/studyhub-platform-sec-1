@@ -27,7 +27,7 @@ function ExamsPage() {
       const { data, error } = await supabase
         .from("exams")
         .select("*")
-        .eq("status", "published")
+        .in("status", ["published", "ended"])
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -60,11 +60,15 @@ function ExamsPage() {
           const mine = attempts?.filter((a) => a.exam_id === e.id) ?? [];
           const best = mine.map((a) => a.percentage);
           const solved = mine.length > 0;
+          const ended = e.status === "ended";
           return (
             <article key={e.id} className="hub-card flex flex-col p-4">
               <div className="flex items-start justify-between">
                 <span className="text-2xl">{SUBJECT_EMOJI[e.subject] ?? "📘"}</span>
-                {solved && <Badge variant="secondary">نتيجتك {Math.max(...best)}%</Badge>}
+                <span className="flex flex-wrap items-center justify-end gap-1">
+                  {ended && <Badge variant="destructive">🔴 انتهى — مغلق</Badge>}
+                  {solved && <Badge variant="secondary">نتيجتك {Math.max(...best)}%</Badge>}
+                </span>
               </div>
               <h3 className="font-display mt-3 font-bold">{e.name}</h3>
               {e.description && (
@@ -78,15 +82,21 @@ function ExamsPage() {
                   <Clock className="size-3.5" /> {e.duration_minutes} د
                 </span>
               </p>
-              <Button
-                asChild
-                className={solved ? "mt-4 font-bold" : "gradient-gold mt-4 font-bold"}
-                variant={solved ? "outline" : "default"}
-              >
-                <Link to="/exams/$examId" params={{ examId: e.id }}>
-                  {solved ? "عرض نتيجتك" : "ابدأ الامتحان"}
-                </Link>
-              </Button>
+              {ended && !solved ? (
+                <Button className="mt-4 font-bold" variant="outline" disabled>
+                  🔒 الامتحان مغلق
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  className={solved ? "mt-4 font-bold" : "gradient-gold mt-4 font-bold"}
+                  variant={solved ? "outline" : "default"}
+                >
+                  <Link to="/exams/$examId" params={{ examId: e.id }}>
+                    {solved ? "عرض نتيجتك" : "ابدأ الامتحان"}
+                  </Link>
+                </Button>
+              )}
             </article>
           );
         })}
