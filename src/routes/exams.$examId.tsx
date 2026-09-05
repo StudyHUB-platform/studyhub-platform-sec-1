@@ -36,7 +36,8 @@ function ExamRunner() {
   const [submitting, setSubmitting] = useState(false);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["exam", examId],
+    queryKey: ["exam", examId, user?.id],
+    enabled: !!user,
     queryFn: async () => {
       const [{ data: exam, error: e1 }, { data: questions, error: e2 }, { data: attempt }] =
         await Promise.all([
@@ -46,6 +47,7 @@ function ExamRunner() {
             .from("exam_attempts")
             .select("answers, score, total, percentage")
             .eq("exam_id", examId)
+            .eq("user_id", user!.id)
             .maybeSingle(),
         ]);
       if (e1) throw e1;

@@ -4,6 +4,7 @@ import { Clock, FileText } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { SUBJECT_EMOJI } from "@/lib/hub";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/exams/")({
 });
 
 function ExamsPage() {
+  const { user } = useAuth();
   const { data: exams, isLoading } = useQuery({
     queryKey: ["exams"],
     queryFn: async () => {
@@ -35,11 +37,13 @@ function ExamsPage() {
   });
 
   const { data: attempts } = useQuery({
-    queryKey: ["attempts"],
+    queryKey: ["attempts", user?.id],
+    enabled: !!user,
     queryFn: async () => {
       const { data } = await supabase
         .from("exam_attempts")
         .select("exam_id, percentage, created_at")
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data ?? [];
     },
