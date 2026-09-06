@@ -36,6 +36,7 @@ import { Route as LibraryCategoryIndexRouteImport } from './routes/library.$cate
 import { Route as VideosSubjectIndexRouteImport } from './routes/videos.$subject.index'
 import { Route as LibraryCategorySubjectIndexRouteImport } from './routes/library.$category.$subject.index'
 import { Route as LibraryCategorySubjectFileTypeRouteImport } from './routes/library.$category.$subject.$fileType'
+import { Route as VideosSubjectSectionIndexRouteImport } from './routes/videos.$subject.$section.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -174,6 +175,12 @@ const LibraryCategorySubjectFileTypeRoute =
     path: '/$category/$subject/$fileType',
     getParentRoute: () => LibraryRoute,
   } as any)
+const VideosSubjectSectionIndexRoute =
+  VideosSubjectSectionIndexRouteImport.update({
+    id: '/$subject/$section/',
+    path: '/$subject/$section/',
+    getParentRoute: () => VideosRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/videos/$subject/': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
+  '/videos/$subject/$section/': typeof VideosSubjectSectionIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -229,6 +237,7 @@ export interface FileRoutesByTo {
   '/videos/$subject': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
   '/library/$category/$subject': typeof LibraryCategorySubjectIndexRoute
+  '/videos/$subject/$section': typeof VideosSubjectSectionIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -259,6 +268,7 @@ export interface FileRoutesById {
   '/videos/$subject/': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
+  '/videos/$subject/$section/': typeof VideosSubjectSectionIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/videos/$subject/'
     | '/library/$category/$subject/$fileType'
     | '/library/$category/$subject/'
+    | '/videos/$subject/$section/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/videos/$subject'
     | '/library/$category/$subject/$fileType'
     | '/library/$category/$subject'
+    | '/videos/$subject/$section'
   id:
     | '__root__'
     | '/'
@@ -345,6 +357,7 @@ export interface FileRouteTypes {
     | '/videos/$subject/'
     | '/library/$category/$subject/$fileType'
     | '/library/$category/$subject/'
+    | '/videos/$subject/$section/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -560,6 +573,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryCategorySubjectFileTypeRouteImport
       parentRoute: typeof LibraryRoute
     }
+    '/videos/$subject/$section/': {
+      id: '/videos/$subject/$section/'
+      path: '/$subject/$section'
+      fullPath: '/videos/$subject/$section/'
+      preLoaderRoute: typeof VideosSubjectSectionIndexRouteImport
+      parentRoute: typeof VideosRoute
+    }
   }
 }
 
@@ -595,11 +615,13 @@ const LibraryRouteWithChildren =
 interface VideosRouteChildren {
   VideosIndexRoute: typeof VideosIndexRoute
   VideosSubjectIndexRoute: typeof VideosSubjectIndexRoute
+  VideosSubjectSectionIndexRoute: typeof VideosSubjectSectionIndexRoute
 }
 
 const VideosRouteChildren: VideosRouteChildren = {
   VideosIndexRoute: VideosIndexRoute,
   VideosSubjectIndexRoute: VideosSubjectIndexRoute,
+  VideosSubjectSectionIndexRoute: VideosSubjectSectionIndexRoute,
 }
 
 const VideosRouteWithChildren =
