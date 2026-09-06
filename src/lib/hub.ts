@@ -13,6 +13,7 @@ import {
   Timer,
   Users,
   BarChart3,
+  Youtube,
 } from "lucide-react";
 
 export const FEATURES = [
