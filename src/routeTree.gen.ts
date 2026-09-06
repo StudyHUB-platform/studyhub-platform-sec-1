@@ -27,12 +27,17 @@ import { Route as TeachersRouteImport } from './routes/teachers'
 import { Route as TodoRouteImport } from './routes/todo'
 import { Route as TranslatorRouteImport } from './routes/translator'
 import { Route as UpdatesRouteImport } from './routes/updates'
+import { Route as VideosRouteImport } from './routes/videos'
 import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
 import { Route as LibraryIndexRouteImport } from './routes/library.index'
+import { Route as VideosIndexRouteImport } from './routes/videos.index'
 import { Route as LibraryCategoryIndexRouteImport } from './routes/library.$category.index'
+import { Route as VideosSubjectIndexRouteImport } from './routes/videos.$subject.index'
 import { Route as LibraryCategorySubjectIndexRouteImport } from './routes/library.$category.$subject.index'
 import { Route as LibraryCategorySubjectFileTypeRouteImport } from './routes/library.$category.$subject.$fileType'
+import { Route as VideosSubjectSectionIndexRouteImport } from './routes/videos.$subject.$section.index'
+import { Route as VideosSubjectSectionVideoIdRouteImport } from './routes/videos.$subject.$section.$videoId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -124,6 +129,11 @@ const UpdatesRoute = UpdatesRouteImport.update({
   path: '/updates',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VideosRoute = VideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExamsIndexRoute = ExamsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -139,10 +149,20 @@ const LibraryIndexRoute = LibraryIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LibraryRoute,
 } as any)
+const VideosIndexRoute = VideosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VideosRoute,
+} as any)
 const LibraryCategoryIndexRoute = LibraryCategoryIndexRouteImport.update({
   id: '/$category/',
   path: '/$category/',
   getParentRoute: () => LibraryRoute,
+} as any)
+const VideosSubjectIndexRoute = VideosSubjectIndexRouteImport.update({
+  id: '/$subject/',
+  path: '/$subject/',
+  getParentRoute: () => VideosRoute,
 } as any)
 const LibraryCategorySubjectIndexRoute =
   LibraryCategorySubjectIndexRouteImport.update({
@@ -155,6 +175,18 @@ const LibraryCategorySubjectFileTypeRoute =
     id: '/$category/$subject/$fileType',
     path: '/$category/$subject/$fileType',
     getParentRoute: () => LibraryRoute,
+  } as any)
+const VideosSubjectSectionIndexRoute =
+  VideosSubjectSectionIndexRouteImport.update({
+    id: '/$subject/$section/',
+    path: '/$subject/$section/',
+    getParentRoute: () => VideosRoute,
+  } as any)
+const VideosSubjectSectionVideoIdRoute =
+  VideosSubjectSectionVideoIdRouteImport.update({
+    id: '/$subject/$section/$videoId',
+    path: '/$subject/$section/$videoId',
+    getParentRoute: () => VideosRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -176,12 +208,17 @@ export interface FileRoutesByFullPath {
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
   '/updates': typeof UpdatesRoute
+  '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
   '/library/': typeof LibraryIndexRoute
+  '/videos/': typeof VideosIndexRoute
   '/library/$category/': typeof LibraryCategoryIndexRoute
+  '/videos/$subject/': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/videos/$subject/$section/$videoId': typeof VideosSubjectSectionVideoIdRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
+  '/videos/$subject/$section/': typeof VideosSubjectSectionIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -203,9 +240,13 @@ export interface FileRoutesByTo {
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams': typeof ExamsIndexRoute
   '/library': typeof LibraryIndexRoute
+  '/videos': typeof VideosIndexRoute
   '/library/$category': typeof LibraryCategoryIndexRoute
+  '/videos/$subject': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/videos/$subject/$section/$videoId': typeof VideosSubjectSectionVideoIdRoute
   '/library/$category/$subject': typeof LibraryCategorySubjectIndexRoute
+  '/videos/$subject/$section': typeof VideosSubjectSectionIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -227,12 +268,17 @@ export interface FileRoutesById {
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
   '/updates': typeof UpdatesRoute
+  '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
   '/library/': typeof LibraryIndexRoute
+  '/videos/': typeof VideosIndexRoute
   '/library/$category/': typeof LibraryCategoryIndexRoute
+  '/videos/$subject/': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/videos/$subject/$section/$videoId': typeof VideosSubjectSectionVideoIdRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
+  '/videos/$subject/$section/': typeof VideosSubjectSectionIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -255,12 +301,17 @@ export interface FileRouteTypes {
     | '/todo'
     | '/translator'
     | '/updates'
+    | '/videos'
     | '/exams/$examId'
     | '/exams/'
     | '/library/'
+    | '/videos/'
     | '/library/$category/'
+    | '/videos/$subject/'
     | '/library/$category/$subject/$fileType'
+    | '/videos/$subject/$section/$videoId'
     | '/library/$category/$subject/'
+    | '/videos/$subject/$section/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -282,9 +333,13 @@ export interface FileRouteTypes {
     | '/exams/$examId'
     | '/exams'
     | '/library'
+    | '/videos'
     | '/library/$category'
+    | '/videos/$subject'
     | '/library/$category/$subject/$fileType'
+    | '/videos/$subject/$section/$videoId'
     | '/library/$category/$subject'
+    | '/videos/$subject/$section'
   id:
     | '__root__'
     | '/'
@@ -305,12 +360,17 @@ export interface FileRouteTypes {
     | '/todo'
     | '/translator'
     | '/updates'
+    | '/videos'
     | '/exams/$examId'
     | '/exams/'
     | '/library/'
+    | '/videos/'
     | '/library/$category/'
+    | '/videos/$subject/'
     | '/library/$category/$subject/$fileType'
+    | '/videos/$subject/$section/$videoId'
     | '/library/$category/$subject/'
+    | '/videos/$subject/$section/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -332,6 +392,7 @@ export interface RootRouteChildren {
   TodoRoute: typeof TodoRoute
   TranslatorRoute: typeof TranslatorRoute
   UpdatesRoute: typeof UpdatesRoute
+  VideosRoute: typeof VideosRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -462,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpdatesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/videos': {
+      id: '/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof VideosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/exams/': {
       id: '/exams/'
       path: '/'
@@ -483,12 +551,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryIndexRouteImport
       parentRoute: typeof LibraryRoute
     }
+    '/videos/': {
+      id: '/videos/'
+      path: '/'
+      fullPath: '/videos/'
+      preLoaderRoute: typeof VideosIndexRouteImport
+      parentRoute: typeof VideosRoute
+    }
     '/library/$category/': {
       id: '/library/$category/'
       path: '/$category'
       fullPath: '/library/$category/'
       preLoaderRoute: typeof LibraryCategoryIndexRouteImport
       parentRoute: typeof LibraryRoute
+    }
+    '/videos/$subject/': {
+      id: '/videos/$subject/'
+      path: '/$subject'
+      fullPath: '/videos/$subject/'
+      preLoaderRoute: typeof VideosSubjectIndexRouteImport
+      parentRoute: typeof VideosRoute
     }
     '/library/$category/$subject/': {
       id: '/library/$category/$subject/'
@@ -503,6 +585,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/library/$category/$subject/$fileType'
       preLoaderRoute: typeof LibraryCategorySubjectFileTypeRouteImport
       parentRoute: typeof LibraryRoute
+    }
+    '/videos/$subject/$section/': {
+      id: '/videos/$subject/$section/'
+      path: '/$subject/$section'
+      fullPath: '/videos/$subject/$section/'
+      preLoaderRoute: typeof VideosSubjectSectionIndexRouteImport
+      parentRoute: typeof VideosRoute
+    }
+    '/videos/$subject/$section/$videoId': {
+      id: '/videos/$subject/$section/$videoId'
+      path: '/$subject/$section/$videoId'
+      fullPath: '/videos/$subject/$section/$videoId'
+      preLoaderRoute: typeof VideosSubjectSectionVideoIdRouteImport
+      parentRoute: typeof VideosRoute
     }
   }
 }
@@ -536,6 +632,23 @@ const LibraryRouteChildren: LibraryRouteChildren = {
 const LibraryRouteWithChildren =
   LibraryRoute._addFileChildren(LibraryRouteChildren)
 
+interface VideosRouteChildren {
+  VideosIndexRoute: typeof VideosIndexRoute
+  VideosSubjectIndexRoute: typeof VideosSubjectIndexRoute
+  VideosSubjectSectionVideoIdRoute: typeof VideosSubjectSectionVideoIdRoute
+  VideosSubjectSectionIndexRoute: typeof VideosSubjectSectionIndexRoute
+}
+
+const VideosRouteChildren: VideosRouteChildren = {
+  VideosIndexRoute: VideosIndexRoute,
+  VideosSubjectIndexRoute: VideosSubjectIndexRoute,
+  VideosSubjectSectionVideoIdRoute: VideosSubjectSectionVideoIdRoute,
+  VideosSubjectSectionIndexRoute: VideosSubjectSectionIndexRoute,
+}
+
+const VideosRouteWithChildren =
+  VideosRoute._addFileChildren(VideosRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -555,6 +668,7 @@ const rootRouteChildren: RootRouteChildren = {
   TodoRoute: TodoRoute,
   TranslatorRoute: TranslatorRoute,
   UpdatesRoute: UpdatesRoute,
+  VideosRoute: VideosRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

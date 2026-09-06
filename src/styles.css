@@ -119,6 +119,7 @@
   --tone-lime: linear-gradient(140deg, oklch(0.88 0.14 145), oklch(0.79 0.16 150));
   --tone-rose: linear-gradient(140deg, oklch(0.83 0.11 22), oklch(0.74 0.15 20));
   --tone-yellow: linear-gradient(140deg, oklch(0.93 0.15 100), oklch(0.86 0.17 95));
+  --tone-red: linear-gradient(140deg, oklch(0.6 0.22 25), oklch(0.48 0.2 22));
   --tone-turquoise: linear-gradient(140deg, oklch(0.88 0.1 190), oklch(0.79 0.12 195));
 }
 
@@ -243,4 +244,40 @@
 @utility tone-turquoise {
   background-image: var(--tone-turquoise);
   color: var(--navy);
+}
+
+@utility tone-red {
+  background-image: var(--tone-red);
+}
+
+@keyframes hub-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes hub-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 0 oklch(0.85 0.15 85 / 0.55),
+      0 0 18px 4px oklch(0.85 0.15 85 / 0.45);
+  }
+  50% {
+    box-shadow:
+      0 0 0 12px oklch(0.85 0.15 85 / 0),
+      0 0 34px 12px oklch(0.85 0.15 85 / 0.65);
+  }
+}
+
+@utility mascot-float {
+  animation: hub-float 4.5s ease-in-out infinite;
+}
+
+@utility mascot-glow {
+  animation: hub-glow 2.8s ease-in-out infinite;
 }
