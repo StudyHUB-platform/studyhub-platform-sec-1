@@ -37,6 +37,7 @@ import { Route as VideosSubjectIndexRouteImport } from './routes/videos.$subject
 import { Route as LibraryCategorySubjectIndexRouteImport } from './routes/library.$category.$subject.index'
 import { Route as LibraryCategorySubjectFileTypeRouteImport } from './routes/library.$category.$subject.$fileType'
 import { Route as VideosSubjectSectionIndexRouteImport } from './routes/videos.$subject.$section.index'
+import { Route as VideosSubjectSectionVideoIdRouteImport } from './routes/videos.$subject.$section.$videoId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -181,6 +182,12 @@ const VideosSubjectSectionIndexRoute =
     path: '/$subject/$section/',
     getParentRoute: () => VideosRoute,
   } as any)
+const VideosSubjectSectionVideoIdRoute =
+  VideosSubjectSectionVideoIdRouteImport.update({
+    id: '/$subject/$section/$videoId',
+    path: '/$subject/$section/$videoId',
+    getParentRoute: () => VideosRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -209,6 +216,7 @@ export interface FileRoutesByFullPath {
   '/library/$category/': typeof LibraryCategoryIndexRoute
   '/videos/$subject/': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/videos/$subject/$section/$videoId': typeof VideosSubjectSectionVideoIdRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
   '/videos/$subject/$section/': typeof VideosSubjectSectionIndexRoute
 }
@@ -236,6 +244,7 @@ export interface FileRoutesByTo {
   '/library/$category': typeof LibraryCategoryIndexRoute
   '/videos/$subject': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/videos/$subject/$section/$videoId': typeof VideosSubjectSectionVideoIdRoute
   '/library/$category/$subject': typeof LibraryCategorySubjectIndexRoute
   '/videos/$subject/$section': typeof VideosSubjectSectionIndexRoute
 }
@@ -267,6 +276,7 @@ export interface FileRoutesById {
   '/library/$category/': typeof LibraryCategoryIndexRoute
   '/videos/$subject/': typeof VideosSubjectIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
+  '/videos/$subject/$section/$videoId': typeof VideosSubjectSectionVideoIdRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
   '/videos/$subject/$section/': typeof VideosSubjectSectionIndexRoute
 }
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/library/$category/'
     | '/videos/$subject/'
     | '/library/$category/$subject/$fileType'
+    | '/videos/$subject/$section/$videoId'
     | '/library/$category/$subject/'
     | '/videos/$subject/$section/'
   fileRoutesByTo: FileRoutesByTo
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/library/$category'
     | '/videos/$subject'
     | '/library/$category/$subject/$fileType'
+    | '/videos/$subject/$section/$videoId'
     | '/library/$category/$subject'
     | '/videos/$subject/$section'
   id:
@@ -356,6 +368,7 @@ export interface FileRouteTypes {
     | '/library/$category/'
     | '/videos/$subject/'
     | '/library/$category/$subject/$fileType'
+    | '/videos/$subject/$section/$videoId'
     | '/library/$category/$subject/'
     | '/videos/$subject/$section/'
   fileRoutesById: FileRoutesById
@@ -580,6 +593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideosSubjectSectionIndexRouteImport
       parentRoute: typeof VideosRoute
     }
+    '/videos/$subject/$section/$videoId': {
+      id: '/videos/$subject/$section/$videoId'
+      path: '/$subject/$section/$videoId'
+      fullPath: '/videos/$subject/$section/$videoId'
+      preLoaderRoute: typeof VideosSubjectSectionVideoIdRouteImport
+      parentRoute: typeof VideosRoute
+    }
   }
 }
 
@@ -615,12 +635,14 @@ const LibraryRouteWithChildren =
 interface VideosRouteChildren {
   VideosIndexRoute: typeof VideosIndexRoute
   VideosSubjectIndexRoute: typeof VideosSubjectIndexRoute
+  VideosSubjectSectionVideoIdRoute: typeof VideosSubjectSectionVideoIdRoute
   VideosSubjectSectionIndexRoute: typeof VideosSubjectSectionIndexRoute
 }
 
 const VideosRouteChildren: VideosRouteChildren = {
   VideosIndexRoute: VideosIndexRoute,
   VideosSubjectIndexRoute: VideosSubjectIndexRoute,
+  VideosSubjectSectionVideoIdRoute: VideosSubjectSectionVideoIdRoute,
   VideosSubjectSectionIndexRoute: VideosSubjectSectionIndexRoute,
 }
 
