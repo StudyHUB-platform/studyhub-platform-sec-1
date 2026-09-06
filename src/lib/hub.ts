@@ -35,6 +35,15 @@ export const FEATURES = [
     tone: "tone-gold",
   },
   {
+    to: "/videos",
+    label: "Study HUB Videos",
+    labelAr: "فيديوهات Study HUB",
+    desc: "فيديوهات الشرح والحل والمراجعات السريعة والشهرية والنهائية لكل مادة.",
+    icon: Youtube,
+    emoji: "🎬",
+    tone: "tone-red",
+  },
+  {
     to: "/exams",
     label: "Exams",
     labelAr: "الامتحانات",
