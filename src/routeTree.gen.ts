@@ -31,6 +31,7 @@ import { Route as VideosRouteImport } from './routes/videos'
 import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
 import { Route as LibraryIndexRouteImport } from './routes/library.index'
+import { Route as VideosIndexRouteImport } from './routes/videos.index'
 import { Route as LibraryCategoryIndexRouteImport } from './routes/library.$category.index'
 import { Route as LibraryCategorySubjectIndexRouteImport } from './routes/library.$category.$subject.index'
 import { Route as LibraryCategorySubjectFileTypeRouteImport } from './routes/library.$category.$subject.$fileType'
@@ -145,6 +146,11 @@ const LibraryIndexRoute = LibraryIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LibraryRoute,
 } as any)
+const VideosIndexRoute = VideosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VideosRoute,
+} as any)
 const LibraryCategoryIndexRoute = LibraryCategoryIndexRouteImport.update({
   id: '/$category/',
   path: '/$category/',
@@ -182,10 +188,11 @@ export interface FileRoutesByFullPath {
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
   '/updates': typeof UpdatesRoute
-  '/videos': typeof VideosRoute
+  '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
   '/library/': typeof LibraryIndexRoute
+  '/videos/': typeof VideosIndexRoute
   '/library/$category/': typeof LibraryCategoryIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
@@ -207,10 +214,10 @@ export interface FileRoutesByTo {
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
   '/updates': typeof UpdatesRoute
-  '/videos': typeof VideosRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams': typeof ExamsIndexRoute
   '/library': typeof LibraryIndexRoute
+  '/videos': typeof VideosIndexRoute
   '/library/$category': typeof LibraryCategoryIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
   '/library/$category/$subject': typeof LibraryCategorySubjectIndexRoute
@@ -235,10 +242,11 @@ export interface FileRoutesById {
   '/todo': typeof TodoRoute
   '/translator': typeof TranslatorRoute
   '/updates': typeof UpdatesRoute
-  '/videos': typeof VideosRoute
+  '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
   '/exams/': typeof ExamsIndexRoute
   '/library/': typeof LibraryIndexRoute
+  '/videos/': typeof VideosIndexRoute
   '/library/$category/': typeof LibraryCategoryIndexRoute
   '/library/$category/$subject/$fileType': typeof LibraryCategorySubjectFileTypeRoute
   '/library/$category/$subject/': typeof LibraryCategorySubjectIndexRoute
@@ -268,6 +276,7 @@ export interface FileRouteTypes {
     | '/exams/$examId'
     | '/exams/'
     | '/library/'
+    | '/videos/'
     | '/library/$category/'
     | '/library/$category/$subject/$fileType'
     | '/library/$category/$subject/'
@@ -289,10 +298,10 @@ export interface FileRouteTypes {
     | '/todo'
     | '/translator'
     | '/updates'
-    | '/videos'
     | '/exams/$examId'
     | '/exams'
     | '/library'
+    | '/videos'
     | '/library/$category'
     | '/library/$category/$subject/$fileType'
     | '/library/$category/$subject'
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
     | '/exams/$examId'
     | '/exams/'
     | '/library/'
+    | '/videos/'
     | '/library/$category/'
     | '/library/$category/$subject/$fileType'
     | '/library/$category/$subject/'
@@ -344,7 +354,7 @@ export interface RootRouteChildren {
   TodoRoute: typeof TodoRoute
   TranslatorRoute: typeof TranslatorRoute
   UpdatesRoute: typeof UpdatesRoute
-  VideosRoute: typeof VideosRoute
+  VideosRoute: typeof VideosRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -503,6 +513,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryIndexRouteImport
       parentRoute: typeof LibraryRoute
     }
+    '/videos/': {
+      id: '/videos/'
+      path: '/'
+      fullPath: '/videos/'
+      preLoaderRoute: typeof VideosIndexRouteImport
+      parentRoute: typeof VideosRoute
+    }
     '/library/$category/': {
       id: '/library/$category/'
       path: '/$category'
@@ -556,6 +573,17 @@ const LibraryRouteChildren: LibraryRouteChildren = {
 const LibraryRouteWithChildren =
   LibraryRoute._addFileChildren(LibraryRouteChildren)
 
+interface VideosRouteChildren {
+  VideosIndexRoute: typeof VideosIndexRoute
+}
+
+const VideosRouteChildren: VideosRouteChildren = {
+  VideosIndexRoute: VideosIndexRoute,
+}
+
+const VideosRouteWithChildren =
+  VideosRoute._addFileChildren(VideosRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -575,7 +603,7 @@ const rootRouteChildren: RootRouteChildren = {
   TodoRoute: TodoRoute,
   TranslatorRoute: TranslatorRoute,
   UpdatesRoute: UpdatesRoute,
-  VideosRoute: VideosRoute,
+  VideosRoute: VideosRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
