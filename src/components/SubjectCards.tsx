@@ -24,7 +24,8 @@ export function SubjectCard({
     <Link
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       to={to as any}
-      params={params}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      params={params as any}
       className={cn(
         "hub-card group flex flex-col items-center justify-center p-6 text-center transition hover:-translate-y-0.5",
         accent === "red" ? "hover:border-destructive/60" : "hover:shadow-gold",
