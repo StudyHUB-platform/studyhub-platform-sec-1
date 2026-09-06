@@ -212,7 +212,36 @@ export const SUBJECT_AR: Record<string, string> = {
   German: "اللغة الألمانية",
 };
 
-export const FILE_TYPES = ["PDF", "Video", "Image", "Link"] as const;
+export const FILE_TYPES = ["PDF", "Image", "Link"] as const;
+
+/** Study HUB Videos — أقسام الفيديوهات */
+export const VIDEO_SECTIONS = [
+  "Explanation & Solutions",
+  "Quick Reviews",
+  "Monthly Reviews",
+  "Final Reviews",
+] as const;
+
+export const VIDEO_SECTION_LABELS: Record<string, string> = {
+  "Explanation & Solutions": "شرح وحل",
+  "Quick Reviews": "مراجعات سريعة",
+  "Monthly Reviews": "المراجعات الشهرية",
+  "Final Reviews": "المراجعات النهائية",
+};
+
+export const VIDEO_SECTION_EMOJI: Record<string, string> = {
+  "Explanation & Solutions": "📝",
+  "Quick Reviews": "⚡",
+  "Monthly Reviews": "📅",
+  "Final Reviews": "🎯",
+};
+
+export const VIDEO_SECTION_DESC: Record<string, string> = {
+  "Explanation & Solutions": "شرح الدروس وحل الأسئلة والتدريبات الخاصة بالمادة.",
+  "Quick Reviews": "فيديوهات قصيرة وسريعة لمراجعة أهم النقاط قبل الامتحان.",
+  "Monthly Reviews": "مراجعة محتوى الشهر وتجميع أهم النقاط والأسئلة.",
+  "Final Reviews": "المراجعة النهائية الشاملة للمادة والاستعداد للامتحانات.",
+};
 
 export const FILE_TYPE_EMOJI: Record<string, string> = {
   PDF: "📄",
