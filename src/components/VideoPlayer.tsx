@@ -111,14 +111,15 @@ export function VideoPlayer({ videoId, title }: { videoId: string; title: string
             setReady(true);
             const p = playerRef.current;
             if (!p) return;
-            setDuration(p.getDuration());
-            setRates(p.getAvailablePlaybackRates());
-            setQualities(["auto", ...p.getAvailableQualityLevels()]);
+            if (typeof p.getDuration === "function") setDuration(p.getDuration());
+            if (typeof p.getAvailablePlaybackRates === "function") setRates(p.getAvailablePlaybackRates());
+            if (typeof p.getAvailableQualityLevels === "function")
+              setQualities(["auto", ...p.getAvailableQualityLevels()]);
           },
           onStateChange: (e: { data: number }) => {
             setPlaying(e.data === 1);
             const p = playerRef.current;
-            if (p) setDuration(p.getDuration());
+            if (typeof p?.getDuration === "function") setDuration(p.getDuration());
           },
         },
       });
@@ -133,9 +134,9 @@ export function VideoPlayer({ videoId, title }: { videoId: string; title: string
   useEffect(() => {
     const id = window.setInterval(() => {
       const p = playerRef.current;
-      if (!p) return;
+      if (typeof p?.getCurrentTime !== "function") return;
       setTime(p.getCurrentTime());
-      setMuted(p.isMuted());
+      if (typeof p.isMuted === "function") setMuted(p.isMuted());
     }, 400);
     return () => window.clearInterval(id);
   }, []);
@@ -179,7 +180,7 @@ export function VideoPlayer({ videoId, title }: { videoId: string; title: string
   const p = playerRef.current;
 
   return (
-    <div ref={wrapRef} className="yt-shell overflow-hidden rounded-2xl bg-black">
+    <div ref={wrapRef} className="yt-shell relative overflow-hidden rounded-2xl bg-black">
       <div className="yt-stage relative aspect-video w-full">
         <div ref={mountRef} className="absolute inset-0 size-full [&>iframe]:size-full" />
         {!ready && (
@@ -196,7 +197,7 @@ export function VideoPlayer({ videoId, title }: { videoId: string; title: string
       </div>
 
       {/* Controls */}
-      <div className="space-y-2 bg-black/95 px-3 py-2.5">
+      <div className="yt-controls space-y-2 bg-black/95 px-3 py-2.5">
         <input
           type="range"
           min={0}
