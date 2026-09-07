@@ -33,7 +33,7 @@ function LibraryFileTypesPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("library_items")
-        .select("file_type")
+        .select("file_type").neq("file_type", "Video")
         .eq("category", category)
         .eq("subject", subject);
       if (error) throw error;

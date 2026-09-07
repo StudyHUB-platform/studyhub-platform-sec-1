@@ -281,3 +281,17 @@
 @utility mascot-glow {
   animation: hub-glow 2.8s ease-in-out infinite;
 }
+
+.yt-shell:fullscreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.yt-shell:fullscreen .yt-stage {
+  aspect-ratio: auto;
+  flex: 1;
+}

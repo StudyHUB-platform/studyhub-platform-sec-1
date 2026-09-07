@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Bot, Send, Sparkles, X } from "lucide-react";
+import { Bot, Send, X } from "lucide-react";
+import mascot from "@/assets/studyhub-mascot.png.asset.json";
 import { useServerFn } from "@tanstack/react-start";
 import { assistantGuide } from "@/lib/ai.functions";
 import { Button } from "@/components/ui/button";
@@ -41,9 +42,13 @@ export function SmartAssistant() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Smart Assistant"
-          className="gradient-gold shadow-gold fixed right-5 bottom-5 z-40 flex size-14 items-center justify-center rounded-full"
+          className="mascot-glow fixed right-5 bottom-5 z-40 flex size-16 items-center justify-center rounded-full bg-sidebar/90 p-1"
         >
-          <Sparkles className="size-6 text-primary-foreground" />
+          <img
+            src={mascot.url}
+            alt="Study HUB Assistant"
+            className="mascot-float size-full object-contain drop-shadow-[0_0_10px_oklch(0.85_0.15_85/0.7)]"
+          />
         </button>
       )}
       {open && (

@@ -25,7 +25,7 @@ function LibraryCategoriesPage() {
   const { data } = useQuery({
     queryKey: ["library-counts"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("library_items").select("category, subject, file_type");
+      const { data, error } = await supabase.from("library_items").select("category, subject, file_type").neq("file_type", "Video");
       if (error) throw error;
       return data;
     },

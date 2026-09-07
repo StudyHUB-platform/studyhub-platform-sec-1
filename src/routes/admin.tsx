@@ -14,6 +14,7 @@ import {
 } from "@/components/admin/AdminSections";
 import { ExamsAdmin, SupportAdmin } from "@/components/admin/ExamsAdmin";
 import { StudentsAdmin } from "@/components/admin/StudentsAdmin";
+import { VideosAdmin } from "@/components/admin/VideosAdmin";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -55,6 +56,7 @@ function AdminPage() {
         <TabsList className="flex h-auto flex-wrap justify-start gap-1">
           <TabsTrigger value="students">👥 الطلاب</TabsTrigger>
           <TabsTrigger value="library">📚 المكتبة</TabsTrigger>
+          <TabsTrigger value="videos">🎬 الفيديوهات</TabsTrigger>
           <TabsTrigger value="exams">📝 الامتحانات</TabsTrigger>
           <TabsTrigger value="teachers">👨‍🏫 المعلمون</TabsTrigger>
           <TabsTrigger value="community">👥 المجتمع</TabsTrigger>
@@ -70,6 +72,9 @@ function AdminPage() {
           </TabsContent>
           <TabsContent value="library">
             <LibraryAdmin />
+          </TabsContent>
+          <TabsContent value="videos">
+            <VideosAdmin />
           </TabsContent>
           <TabsContent value="exams">
             <ExamsAdmin />
