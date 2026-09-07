@@ -179,8 +179,8 @@ export function VideoPlayer({ videoId, title }: { videoId: string; title: string
   const p = playerRef.current;
 
   return (
-    <div ref={wrapRef} className="overflow-hidden rounded-2xl bg-black">
-      <div className="relative aspect-video w-full full:aspect-auto full:h-[calc(100vh-4.5rem)]">
+    <div ref={wrapRef} className="yt-shell overflow-hidden rounded-2xl bg-black">
+      <div className="yt-stage relative aspect-video w-full">
         <div ref={mountRef} className="absolute inset-0 size-full [&>iframe]:size-full" />
         {!ready && (
           <div className="absolute inset-0 flex items-center justify-center">
