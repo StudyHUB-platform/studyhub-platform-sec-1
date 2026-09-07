@@ -15,6 +15,13 @@
       "when": 1788567064590,
       "tag": "0001_create_videos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788776365720,
+      "tag": "0002_phone_signup_support",
+      "breakpoints": true
     }
   ]
 }
