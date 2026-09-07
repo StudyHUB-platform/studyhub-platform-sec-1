@@ -43,6 +43,7 @@ function LibraryItemsPage() {
         .eq("category", category)
         .eq("subject", subject)
         .eq("file_type", fileType)
+        .neq("file_type", "Video")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
