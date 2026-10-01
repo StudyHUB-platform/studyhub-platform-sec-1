@@ -38,6 +38,270 @@ export type Database = {
         }
         Relationships: []
       }
+      cl_attempts: {
+        Row: {
+          answers: Json
+          deadline: string
+          id: string
+          match_id: string | null
+          participant_id: string
+          percentage: number
+          question_ids: Json
+          round: number
+          score: number
+          started_at: string
+          status: string
+          submitted_at: string | null
+          total: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          deadline: string
+          id?: string
+          match_id?: string | null
+          participant_id: string
+          percentage?: number
+          question_ids?: Json
+          round: number
+          score?: number
+          started_at?: string
+          status?: string
+          submitted_at?: string | null
+          total?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          deadline?: string
+          id?: string
+          match_id?: string | null
+          participant_id?: string
+          percentage?: number
+          question_ids?: Json
+          round?: number
+          score?: number
+          started_at?: string
+          status?: string
+          submitted_at?: string | null
+          total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cl_attempts_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "cl_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cl_attempts_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "cl_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cl_matches: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          id: string
+          p1: string | null
+          p2: string | null
+          round: number
+          slot: number
+          winner: string | null
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          p1?: string | null
+          p2?: string | null
+          round: number
+          slot: number
+          winner?: string | null
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          p1?: string | null
+          p2?: string | null
+          round?: number
+          slot?: number
+          winner?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cl_matches_p1_fkey"
+            columns: ["p1"]
+            isOneToOne: false
+            referencedRelation: "cl_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cl_matches_p2_fkey"
+            columns: ["p2"]
+            isOneToOne: false
+            referencedRelation: "cl_participants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cl_matches_winner_fkey"
+            columns: ["winner"]
+            isOneToOne: false
+            referencedRelation: "cl_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cl_participants: {
+        Row: {
+          created_at: string
+          emoji: string
+          gender: string
+          id: string
+          is_warned: boolean
+          name: string
+          phone: string
+          seed: number | null
+          study_type: string
+          user_id: string
+          warning_note: string | null
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          gender: string
+          id?: string
+          is_warned?: boolean
+          name: string
+          phone: string
+          seed?: number | null
+          study_type: string
+          user_id: string
+          warning_note?: string | null
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          gender?: string
+          id?: string
+          is_warned?: boolean
+          name?: string
+          phone?: string
+          seed?: number | null
+          study_type?: string
+          user_id?: string
+          warning_note?: string | null
+        }
+        Relationships: []
+      }
+      cl_questions: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          explanation: string | null
+          id: string
+          image_url: string | null
+          options: Json
+          position: number
+          question_text: string
+          round: number
+          subject: string
+          track: string
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          image_url?: string | null
+          options?: Json
+          position?: number
+          question_text?: string
+          round: number
+          subject: string
+          track?: string
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          image_url?: string | null
+          options?: Json
+          position?: number
+          question_text?: string
+          round?: number
+          subject?: string
+          track?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cl_questions_round_fkey"
+            columns: ["round"]
+            isOneToOne: false
+            referencedRelation: "cl_rounds"
+            referencedColumns: ["round"]
+          },
+        ]
+      }
+      cl_rounds: {
+        Row: {
+          duration_minutes: number
+          end_at: string | null
+          is_open: boolean
+          question_limit: number | null
+          round: number
+          start_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          duration_minutes?: number
+          end_at?: string | null
+          is_open?: boolean
+          question_limit?: number | null
+          round: number
+          start_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          duration_minutes?: number
+          end_at?: string | null
+          is_open?: boolean
+          question_limit?: number | null
+          round?: number
+          start_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      cl_settings: {
+        Row: {
+          bracket_published: boolean
+          id: number
+          registration_open: boolean
+          updated_at: string
+        }
+        Insert: {
+          bracket_published?: boolean
+          id?: number
+          registration_open?: boolean
+          updated_at?: string
+        }
+        Update: {
+          bracket_published?: boolean
+          id?: number
+          registration_open?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       community_links: {
         Row: {
           created_at: string
@@ -646,6 +910,49 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cl_admin_set_winner: {
+        Args: { _match: string; _winner: string }
+        Returns: undefined
+      }
+      cl_bracket_participants: {
+        Args: never
+        Returns: {
+          emoji: string
+          id: string
+          is_warned: boolean
+          name: string
+        }[]
+      }
+      cl_finalize: { Args: { _attempt: string }; Returns: undefined }
+      cl_get_exam: { Args: { _round: number }; Returns: Json }
+      cl_is_participant: { Args: never; Returns: boolean }
+      cl_participant_count: { Args: never; Returns: number }
+      cl_place_winner: {
+        Args: { _round: number; _slot: number; _winner: string }
+        Returns: undefined
+      }
+      cl_refresh: { Args: never; Returns: undefined }
+      cl_register: {
+        Args: {
+          _emoji: string
+          _gender: string
+          _name: string
+          _phone: string
+          _study_type: string
+        }
+        Returns: string
+      }
+      cl_resolve_match: { Args: { _match: string }; Returns: undefined }
+      cl_save_answers: {
+        Args: { _answers: Json; _round: number }
+        Returns: boolean
+      }
+      cl_start_attempt: { Args: { _round: number }; Returns: string }
+      cl_submit_attempt: {
+        Args: { _answers: Json; _round: number }
+        Returns: undefined
+      }
+      cl_taken_emojis: { Args: never; Returns: string[] }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
