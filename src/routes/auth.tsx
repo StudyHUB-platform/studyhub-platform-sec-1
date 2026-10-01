@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Mail, Phone } from "lucide-react";
+import { Phone, UserPlus } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
@@ -18,13 +18,22 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "تسجيل الدخول — Study HUB" },
-      { name: "description", content: "أنشئ حسابك في Study HUB بالبريد أو رقم الهاتف أو Google." },
+      { name: "description", content: "أنشئ حسابك في Study HUB برقم الهاتف والاسم وكلمة المرور." },
       { property: "og:title", content: "تسجيل الدخول — Study HUB" },
       { property: "og:description", content: "أنشئ حسابك في Study HUB وابدأ الدراسة." },
     ],
   }),
   component: AuthPage,
 });
+
+/* رقم الهاتف هو هوية الحساب — نحوّله لبريد داخلي ثابت للمصادقة. */
+const PHONE_DOMAIN = "studyhub.app";
+const normalizePhone = (value: string) => value.replace(/\D/g, "");
+const phoneToEmail = (value: string) => `${normalizePhone(value)}@${PHONE_DOMAIN}`;
+const phoneSchema = z
+  .string()
+  .transform(normalizePhone)
+  .refine((v) => /^\d{11}$/.test(v), { message: "رقم الهاتف يجب أن يكون 11 رقم بالظبط" });
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -34,36 +43,66 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
 
   useEffect(() => {
     if (!loading && session) void navigate({ to: "/dashboard", replace: true });
   }, [loading, session, navigate]);
 
   const signUp = async () => {
+    const parsed = phoneSchema.safeParse(phone);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]!.message);
+      return;
+    }
+    if (name.trim().length < 2) {
+      toast.error("اكتب اسمك الكامل");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("كلمة المرور لازم تكون 6 أحرف على الأقل");
+      return;
+    }
     setBusy(true);
+    const digits = parsed.data;
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: phoneToEmail(digits),
       password,
-      options: { emailRedirectTo: window.location.origin, data: { full_name: name } },
+      options: { data: { full_name: name.trim(), phone: digits } },
     });
     setBusy(false);
     if (error) {
-      toast.error(error.message);
+      const msg = error.message.toLowerCase();
+      toast.error(
+        msg.includes("already") || msg.includes("registered") || msg.includes("exists")
+          ? "رقم الهاتف مسجّل بالفعل — سجّل الدخول بدل إنشاء حساب جديد"
+          : error.message,
+      );
       return;
     }
-    if (!data.session) toast.success("تم إنشاء الحساب! راجع بريدك لتأكيد الحساب.");
+    /* الحساب موجود مسبقًا: Supabase يرجع يوزر بدون identities */
+    if (data.user && (data.user.identities?.length ?? 0) === 0) {
+      toast.error("رقم الهاتف مسجّل بالفعل — سجّل الدخول بدل إنشاء حساب جديد");
+      return;
+    }
+    if (!data.session) toast.success("تم إنشاء الحساب! سجّل الدخول برقم هاتفك.");
+    else toast.success("تم إنشاء الحساب بنجاح 🎉");
   };
 
   const signIn = async () => {
+    const parsed = phoneSchema.safeParse(phone);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]!.message);
+      return;
+    }
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: phoneToEmail(parsed.data),
+      password,
+    });
     setBusy(false);
-    if (error) toast.error(error.message);
+    if (error) toast.error("رقم الهاتف أو كلمة المرور غير صحيحة");
   };
 
   const google = async () => {
@@ -73,24 +112,22 @@ function AuthPage() {
     if (result.error) toast.error("تعذر تسجيل الدخول بجوجل");
   };
 
-  const sendOtp = async () => {
-    setBusy(true);
-    const { error } = await supabase.auth.signInWithOtp({ phone });
-    setBusy(false);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    setOtpSent(true);
-    toast.success("تم إرسال كود التحقق");
-  };
-
-  const verifyOtp = async () => {
-    setBusy(true);
-    const { error } = await supabase.auth.verifyOtp({ phone, token: otp, type: "sms" });
-    setBusy(false);
-    if (error) toast.error(error.message);
-  };
+  const phoneField = (
+    <div className="space-y-1.5">
+      <Label className="flex items-center gap-1.5">
+        <Phone className="size-3.5 text-primary" /> رقم الهاتف (11 رقم)
+      </Label>
+      <Input
+        type="tel"
+        inputMode="numeric"
+        maxLength={11}
+        dir="ltr"
+        value={phone}
+        onChange={(e) => setPhone(normalizePhone(e.target.value).slice(0, 11))}
+        placeholder="01xxxxxxxxx"
+      />
+    </div>
+  );
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
@@ -110,24 +147,21 @@ function AuthPage() {
                 <Label>الاسم</Label>
                 <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="اسمك الكامل" />
               </div>
-              <div className="space-y-1.5">
-                <Label>البريد الإلكتروني</Label>
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
+              {phoneField}
               <div className="space-y-1.5">
                 <Label>كلمة المرور</Label>
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
               <Button className="gradient-gold w-full font-bold" disabled={busy} onClick={() => void signUp()}>
-                <Mail className="mr-2 size-4" /> Create Account
+                <UserPlus className="mr-2 size-4" /> إنشاء الحساب
               </Button>
+              <p className="text-center text-[11px] text-muted-foreground">
+                كل رقم هاتف يُسجّل مرة واحدة فقط.
+              </p>
             </TabsContent>
 
             <TabsContent value="signin" className="mt-5 space-y-3">
-              <div className="space-y-1.5">
-                <Label>البريد الإلكتروني</Label>
-                <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
+              {phoneField}
               <div className="space-y-1.5">
                 <Label>كلمة المرور</Label>
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
@@ -145,31 +179,6 @@ function AuthPage() {
           <Button variant="outline" className="w-full font-semibold" onClick={() => void google()}>
             Continue with Google
           </Button>
-
-          <div className="mt-4 space-y-2 rounded-xl border border-border p-3">
-            <p className="flex items-center gap-2 text-sm font-bold">
-              <Phone className="size-4 text-primary" /> Phone Number
-            </p>
-            {!otpSent ? (
-              <div className="flex gap-2">
-                <Input
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+201234567890"
-                />
-                <Button variant="secondary" disabled={busy} onClick={() => void sendOtp()}>
-                  إرسال
-                </Button>
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <Input value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="كود التحقق" />
-                <Button variant="secondary" disabled={busy} onClick={() => void verifyOtp()}>
-                  تأكيد
-                </Button>
-              </div>
-            )}
-          </div>
         </div>
         <p className="mt-6 text-center text-xs text-muted-foreground">
           © Study HUB | Developed by Ahmed Shaaban &amp; Retaj Mohamed
