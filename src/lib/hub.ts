@@ -14,6 +14,7 @@ import {
   Users,
   BarChart3,
   Youtube,
+  Trophy,
 } from "lucide-react";
 
 export const FEATURES = [
@@ -52,6 +53,15 @@ export const FEATURES = [
     icon: FileText,
     emoji: "📝",
     tone: "tone-orange",
+  },
+  {
+    to: "/champions",
+    label: "Study HUB Champions League",
+    labelAr: "دوري أبطال Study HUB 🏆",
+    desc: "بطولة تعليمية لـ16 متسابق بأربع جولات وخريطة مواجهات حتى النهائي.",
+    icon: Trophy,
+    emoji: "🏆",
+    tone: "tone-magenta",
   },
   {
     to: "/todo",

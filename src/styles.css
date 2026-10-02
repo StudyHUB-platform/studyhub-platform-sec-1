@@ -121,6 +121,7 @@
   --tone-yellow: linear-gradient(140deg, oklch(0.93 0.15 100), oklch(0.86 0.17 95));
   --tone-red: linear-gradient(140deg, oklch(0.6 0.22 25), oklch(0.48 0.2 22));
   --tone-turquoise: linear-gradient(140deg, oklch(0.88 0.1 190), oklch(0.79 0.12 195));
+  --tone-magenta: linear-gradient(140deg, oklch(0.62 0.26 335), oklch(0.48 0.24 330));
 }
 
 /* Dark mode (toggled by the Dark Mode switch) */
@@ -307,4 +308,8 @@
   inset-inline: 0;
   bottom: 0;
   background: linear-gradient(to top, oklch(0 0 0 / 0.85), oklch(0 0 0 / 0));
+}
+
+@utility tone-magenta {
+  background-image: var(--tone-magenta);
 }
