@@ -15,6 +15,7 @@ import {
 import { ExamsAdmin, SupportAdmin } from "@/components/admin/ExamsAdmin";
 import { StudentsAdmin } from "@/components/admin/StudentsAdmin";
 import { VideosAdmin } from "@/components/admin/VideosAdmin";
+import { ChampionsAdmin } from "@/components/admin/ChampionsAdmin";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -58,6 +59,7 @@ function AdminPage() {
           <TabsTrigger value="library">📚 المكتبة</TabsTrigger>
           <TabsTrigger value="videos">🎬 الفيديوهات</TabsTrigger>
           <TabsTrigger value="exams">📝 الامتحانات</TabsTrigger>
+          <TabsTrigger value="champions">🏆 Champions League</TabsTrigger>
           <TabsTrigger value="teachers">👨‍🏫 المعلمون</TabsTrigger>
           <TabsTrigger value="community">👥 المجتمع</TabsTrigger>
           <TabsTrigger value="notifications">🔔 الإشعارات</TabsTrigger>
@@ -78,6 +80,9 @@ function AdminPage() {
           </TabsContent>
           <TabsContent value="exams">
             <ExamsAdmin />
+          </TabsContent>
+          <TabsContent value="champions">
+            <ChampionsAdmin />
           </TabsContent>
           <TabsContent value="teachers">
             <TeachersAdmin />

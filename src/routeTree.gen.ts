@@ -33,6 +33,7 @@ import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
 import { Route as LibraryIndexRouteImport } from './routes/library.index'
 import { Route as VideosIndexRouteImport } from './routes/videos.index'
+import { Route as ChampionsExamRoundRouteImport } from './routes/champions.exam.$round'
 import { Route as ChampionsMatchMatchIdRouteImport } from './routes/champions.match.$matchId'
 import { Route as LibraryCategoryIndexRouteImport } from './routes/library.$category.index'
 import { Route as VideosSubjectIndexRouteImport } from './routes/videos.$subject.index'
@@ -161,6 +162,11 @@ const VideosIndexRoute = VideosIndexRouteImport.update({
   path: '/',
   getParentRoute: () => VideosRoute,
 } as any)
+const ChampionsExamRoundRoute = ChampionsExamRoundRouteImport.update({
+  id: '/champions/exam/$round',
+  path: '/champions/exam/$round',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChampionsMatchMatchIdRoute = ChampionsMatchMatchIdRouteImport.update({
   id: '/champions/match/$matchId',
   path: '/champions/match/$matchId',
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/exams/': typeof ExamsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/videos/': typeof VideosIndexRoute
+  '/champions/exam/$round': typeof ChampionsExamRoundRoute
   '/champions/match/$matchId': typeof ChampionsMatchMatchIdRoute
   '/library/$category/': typeof LibraryCategoryIndexRoute
   '/videos/$subject/': typeof VideosSubjectIndexRoute
@@ -256,6 +263,7 @@ export interface FileRoutesByTo {
   '/exams': typeof ExamsIndexRoute
   '/library': typeof LibraryIndexRoute
   '/videos': typeof VideosIndexRoute
+  '/champions/exam/$round': typeof ChampionsExamRoundRoute
   '/champions/match/$matchId': typeof ChampionsMatchMatchIdRoute
   '/library/$category': typeof LibraryCategoryIndexRoute
   '/videos/$subject': typeof VideosSubjectIndexRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/exams/': typeof ExamsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/videos/': typeof VideosIndexRoute
+  '/champions/exam/$round': typeof ChampionsExamRoundRoute
   '/champions/match/$matchId': typeof ChampionsMatchMatchIdRoute
   '/library/$category/': typeof LibraryCategoryIndexRoute
   '/videos/$subject/': typeof VideosSubjectIndexRoute
@@ -325,6 +334,7 @@ export interface FileRouteTypes {
     | '/exams/'
     | '/library/'
     | '/videos/'
+    | '/champions/exam/$round'
     | '/champions/match/$matchId'
     | '/library/$category/'
     | '/videos/$subject/'
@@ -355,6 +365,7 @@ export interface FileRouteTypes {
     | '/exams'
     | '/library'
     | '/videos'
+    | '/champions/exam/$round'
     | '/champions/match/$matchId'
     | '/library/$category'
     | '/videos/$subject'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/exams/'
     | '/library/'
     | '/videos/'
+    | '/champions/exam/$round'
     | '/champions/match/$matchId'
     | '/library/$category/'
     | '/videos/$subject/'
@@ -418,6 +430,7 @@ export interface RootRouteChildren {
   UpdatesRoute: typeof UpdatesRoute
   VideosRoute: typeof VideosRouteWithChildren
   ChampionsIndexRoute: typeof ChampionsIndexRoute
+  ChampionsExamRoundRoute: typeof ChampionsExamRoundRoute
   ChampionsMatchMatchIdRoute: typeof ChampionsMatchMatchIdRoute
 }
 
@@ -591,6 +604,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideosIndexRouteImport
       parentRoute: typeof VideosRoute
     }
+    '/champions/exam/$round': {
+      id: '/champions/exam/$round'
+      path: '/champions/exam/$round'
+      fullPath: '/champions/exam/$round'
+      preLoaderRoute: typeof ChampionsExamRoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/champions/match/$matchId': {
       id: '/champions/match/$matchId'
       path: '/champions/match/$matchId'
@@ -710,6 +730,7 @@ const rootRouteChildren: RootRouteChildren = {
   UpdatesRoute: UpdatesRoute,
   VideosRoute: VideosRouteWithChildren,
   ChampionsIndexRoute: ChampionsIndexRoute,
+  ChampionsExamRoundRoute: ChampionsExamRoundRoute,
   ChampionsMatchMatchIdRoute: ChampionsMatchMatchIdRoute,
 }
 export const routeTree = rootRouteImport
