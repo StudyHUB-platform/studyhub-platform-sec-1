@@ -79,10 +79,12 @@ function RoundExam() {
   answersRef.current = answers;
   const [left, setLeft] = useState(0);
   const offset = useRef(0);
+  const done = useRef<string | null>(null);
 
   const exam = useQuery({
     queryKey: ["cl-exam", round, user?.id],
     enabled: !!user,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase.rpc("cl_get_exam", { _round: round });
       if (error) throw error;
@@ -91,17 +93,21 @@ function RoundExam() {
   });
   const attempt = exam.data?.attempt;
   const inProgress = attempt?.status === "in_progress";
+  const attemptRef = useRef(attempt);
+  attemptRef.current = attempt;
 
   const finish = useCallback(
     async (reason?: string) => {
-      if (!attempt || attempt.status !== "in_progress") return;
+      const a = attemptRef.current;
+      if (!a || a.status !== "in_progress" || done.current === a.id) return;
+      done.current = a.id;
       liveAttempt.id = null;
       await supabase.rpc("cl_submit_attempt", { _round: round, _answers: answersRef.current });
       if (reason) toast.info(reason);
       void qc.invalidateQueries({ queryKey: ["cl-exam", round] });
       void qc.invalidateQueries({ queryKey: ["champions"] });
     },
-    [attempt, round, qc],
+    [round, qc],
   );
 
   // attempt opened outside this page session (reload / came back) → closed as submitted
