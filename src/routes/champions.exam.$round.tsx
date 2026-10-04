@@ -168,7 +168,7 @@ function RoundExam() {
     const { data, error } = await supabase.rpc("cl_start_attempt", { _round: round });
     setBusy(false);
     setConfirm(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     liveAttempt.id = data as string;
     setAnswers({});
     await exam.refetch();
