@@ -171,11 +171,11 @@ function RegisterForm({ count }: { count: number }) {
   }, [profile]);
 
   const submit = async () => {
-    if (name.trim().length < 2) return toast.error("اكتب الاسم");
-    if (!/^\d{11}$/.test(phone)) return toast.error("رقم الهاتف يجب أن يكون 11 رقم");
-    if (!gender) return toast.error("اختر النوع");
-    if (!study) return toast.error("اختر نوع الدراسة");
-    if (!emoji) return toast.error("اختر Emoji خاص بك");
+    if (name.trim().length < 2) { toast.error("اكتب الاسم"); return; }
+    if (!/^\d{11}$/.test(phone)) { toast.error("رقم الهاتف يجب أن يكون 11 رقم"); return; }
+    if (!gender) { toast.error("اختر النوع"); return; }
+    if (!study) { toast.error("اختر نوع الدراسة"); return; }
+    if (!emoji) { toast.error("اختر Emoji خاص بك"); return; }
     setBusy(true);
     const { error } = await supabase.rpc("cl_register", {
       _name: name.trim(),

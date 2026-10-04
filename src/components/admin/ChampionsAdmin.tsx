@@ -90,7 +90,7 @@ function Players({ d }: { d: D }) {
     const { error } = await supabase.from("cl_settings").update({ registration_open: v, updated_at: new Date().toISOString() }).eq("id", 1);
     if (error) toast.error(error.message); else inv();
   };
-  const upd = async (id: string, patch: Record<string, unknown>) => {
+  const upd = async (id: string, patch: { seed?: number; is_warned?: boolean; warning_note?: string | null }) => {
     const { error } = await supabase.from("cl_participants").update(patch).eq("id", id);
     if (error) toast.error(error.message); else inv();
   };
@@ -174,9 +174,10 @@ function BracketAdmin({ d }: { d: D }) {
   const setSide = async (slot: number, side: "p1" | "p2", val: string) => {
     const existing = d.matches.find((m) => m.round === round && m.slot === slot);
     const v = val || null;
+    const patch = side === "p1" ? { p1: v } : { p2: v };
     const { error } = existing
-      ? await supabase.from("cl_matches").update({ [side]: v }).eq("id", existing.id)
-      : await supabase.from("cl_matches").insert({ round, slot, [side]: v });
+      ? await supabase.from("cl_matches").update(patch).eq("id", existing.id)
+      : await supabase.from("cl_matches").insert({ round, slot, ...patch });
     if (error) toast.error(error.message); else inv();
   };
   const setWinner = async (matchId: string, w: string) => {
@@ -272,9 +273,9 @@ function RoundEditor({ row }: { row: RoundRow }) {
   const st = roundState(row);
   const locked = st !== "not_started";
   const save = async () => {
-    if (!start || !end) return toast.error("حدد موعد البداية والنهاية");
-    if (new Date(end) <= new Date(start)) return toast.error("النهاية يجب أن تكون بعد البداية");
-    if (dur < 1) return toast.error("مدة غير صحيحة");
+    if (!start || !end) { toast.error("حدد موعد البداية والنهاية"); return; }
+    if (new Date(end) <= new Date(start)) { toast.error("النهاية يجب أن تكون بعد البداية"); return; }
+    if (dur < 1) { toast.error("مدة غير صحيحة"); return; }
     const { error } = await supabase.from("cl_rounds").update({
       start_at: new Date(start).toISOString(),
       end_at: new Date(end).toISOString(),
@@ -337,9 +338,9 @@ function QuestionsAdmin({ d }: { d: D }) {
   };
   const save = async () => {
     const opts = options.map((o) => o.trim()).filter(Boolean);
-    if (!text.trim() && !image) return toast.error("اكتب السؤال أو أضف صورة");
-    if (opts.length < 2) return toast.error("أضف اختيارين على الأقل");
-    if (!correct || !opts.includes(correct)) return toast.error("حدد الإجابة الصحيحة");
+    if (!text.trim() && !image) { toast.error("اكتب السؤال أو أضف صورة"); return; }
+    if (opts.length < 2) { toast.error("أضف اختيارين على الأقل"); return; }
+    if (!correct || !opts.includes(correct)) { toast.error("حدد الإجابة الصحيحة"); return; }
     const payload = {
       round, subject, track: split ? track : "all", question_text: text.trim(), image_url: image || null,
       options: opts, correct_answer: correct, explanation: explanation.trim() || null,
@@ -347,7 +348,7 @@ function QuestionsAdmin({ d }: { d: D }) {
     const { error } = editing
       ? await supabase.from("cl_questions").update(payload).eq("id", editing)
       : await supabase.from("cl_questions").insert({ ...payload, position: d.questions.filter((q) => q.round === round).length });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(editing ? "تم تعديل السؤال" : "تمت إضافة السؤال");
     reset(); inv();
   };
