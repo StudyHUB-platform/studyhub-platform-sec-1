@@ -90,7 +90,7 @@ function Players({ d }: { d: D }) {
     const { error } = await supabase.from("cl_settings").update({ registration_open: v, updated_at: new Date().toISOString() }).eq("id", 1);
     if (error) toast.error(error.message); else inv();
   };
-  const upd = async (id: string, patch: Record<string, unknown>) => {
+  const upd = async (id: string, patch: { seed?: number; is_warned?: boolean; warning_note?: string | null }) => {
     const { error } = await supabase.from("cl_participants").update(patch).eq("id", id);
     if (error) toast.error(error.message); else inv();
   };
@@ -174,9 +174,10 @@ function BracketAdmin({ d }: { d: D }) {
   const setSide = async (slot: number, side: "p1" | "p2", val: string) => {
     const existing = d.matches.find((m) => m.round === round && m.slot === slot);
     const v = val || null;
+    const patch = side === "p1" ? { p1: v } : { p2: v };
     const { error } = existing
-      ? await supabase.from("cl_matches").update({ [side]: v }).eq("id", existing.id)
-      : await supabase.from("cl_matches").insert({ round, slot, [side]: v });
+      ? await supabase.from("cl_matches").update(patch).eq("id", existing.id)
+      : await supabase.from("cl_matches").insert({ round, slot, ...patch });
     if (error) toast.error(error.message); else inv();
   };
   const setWinner = async (matchId: string, w: string) => {
