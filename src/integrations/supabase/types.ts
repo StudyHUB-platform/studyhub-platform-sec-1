@@ -329,6 +329,30 @@ export type Database = {
         }
         Relationships: []
       }
+      device_link_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          token_hash: string
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          token_hash: string
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          token_hash?: string
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       exam_attempts: {
         Row: {
           answers: Json
@@ -447,6 +471,33 @@ export type Database = {
           name?: string
           status?: string
           subject?: string
+        }
+        Relationships: []
+      }
+      flashcards: {
+        Row: {
+          answer: string
+          created_at: string
+          id: string
+          question: string
+          subject: string
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          id?: string
+          question: string
+          subject: string
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          id?: string
+          question?: string
+          subject?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -575,6 +626,24 @@ export type Database = {
         }
         Relationships: []
       }
+      phone_logins: {
+        Row: {
+          created_at: string
+          phone: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          phone: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          phone?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       platform_updates: {
         Row: {
           content: string
@@ -632,6 +701,36 @@ export type Database = {
           is_banned?: boolean
           phone?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      reward_events: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          ref: string
+          shards: number
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          ref: string
+          shards?: number
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          ref?: string
+          shards?: number
+          user_id?: string
+          xp?: number
         }
         Relationships: []
       }
@@ -802,6 +901,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_stats: {
+        Row: {
+          created_at: string
+          last_study_day: string | null
+          level: number
+          public_id: string
+          shards: number
+          shards_reached_at: string
+          streak: number
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          last_study_day?: string | null
+          level?: number
+          public_id: string
+          shards?: number
+          shards_reached_at?: string
+          streak?: number
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          last_study_day?: string | null
+          level?: number
+          public_id?: string
+          shards?: number
+          shards_reached_at?: string
+          streak?: number
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
       video_comments: {
         Row: {
           body: string
@@ -910,6 +1045,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award: {
+        Args: {
+          _kind: string
+          _ref: string
+          _shards: number
+          _uid: string
+          _xp: number
+        }
+        Returns: undefined
+      }
       cl_admin_set_winner: {
         Args: { _match: string; _winner: string }
         Returns: undefined
@@ -953,6 +1098,10 @@ export type Database = {
         Returns: undefined
       }
       cl_taken_emojis: { Args: never; Returns: string[] }
+      claim_level_up: { Args: never; Returns: Json }
+      create_device_link: { Args: never; Returns: string }
+      ensure_user_stats: { Args: { _uid: string }; Returns: undefined }
+      gen_public_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -960,7 +1109,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      honor_board: {
+        Args: never
+        Returns: {
+          is_me: boolean
+          level: number
+          name: string
+          rank: number
+          shards: number
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
+      level_for_xp: { Args: { _xp: number }; Returns: number }
+      level_xp_required: { Args: { _l: number }; Returns: number }
+      my_stats: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "user"
