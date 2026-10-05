@@ -15,6 +15,7 @@ import {
   BarChart3,
   Youtube,
   Trophy,
+  Layers,
 } from "lucide-react";
 
 export const FEATURES = [
@@ -53,6 +54,15 @@ export const FEATURES = [
     icon: FileText,
     emoji: "📝",
     tone: "tone-orange",
+  },
+  {
+    to: "/flashcards",
+    label: "Flash Cards",
+    labelAr: "بطاقات المراجعة",
+    desc: "اكتب الأسئلة التي تخطئ فيها وراجعها بكروت تنقلب مثل الألعاب.",
+    icon: Layers,
+    emoji: "🃏",
+    tone: "tone-bluegray",
   },
   {
     to: "/champions",

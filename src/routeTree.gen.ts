@@ -18,7 +18,9 @@ import { Route as CommunityRouteImport } from './routes/community'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as FocusRouteImport } from './routes/focus'
+import { Route as HonorRouteImport } from './routes/honor'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as LinkDeviceRouteImport } from './routes/link-device'
 import { Route as NotesRouteImport } from './routes/notes'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as StatisticsRouteImport } from './routes/statistics'
@@ -31,6 +33,8 @@ import { Route as VideosRouteImport } from './routes/videos'
 import { Route as ChampionsIndexRouteImport } from './routes/champions.index'
 import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
+import { Route as FlashcardsIndexRouteImport } from './routes/flashcards.index'
+import { Route as FlashcardsSubjectRouteImport } from './routes/flashcards.$subject'
 import { Route as LibraryIndexRouteImport } from './routes/library.index'
 import { Route as VideosIndexRouteImport } from './routes/videos.index'
 import { Route as ChampionsExamRoundRouteImport } from './routes/champions.exam.$round'
@@ -87,9 +91,19 @@ const FocusRoute = FocusRouteImport.update({
   path: '/focus',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HonorRoute = HonorRouteImport.update({
+  id: '/honor',
+  path: '/honor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinkDeviceRoute = LinkDeviceRouteImport.update({
+  id: '/link-device',
+  path: '/link-device',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotesRoute = NotesRouteImport.update({
@@ -151,6 +165,16 @@ const ExamsExamIdRoute = ExamsExamIdRouteImport.update({
   id: '/$examId',
   path: '/$examId',
   getParentRoute: () => ExamsRoute,
+} as any)
+const FlashcardsIndexRoute = FlashcardsIndexRouteImport.update({
+  id: '/flashcards/',
+  path: '/flashcards/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlashcardsSubjectRoute = FlashcardsSubjectRouteImport.update({
+  id: '/flashcards/$subject',
+  path: '/flashcards/$subject',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryIndexRoute = LibraryIndexRouteImport.update({
   id: '/',
@@ -217,7 +241,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/exams': typeof ExamsRouteWithChildren
   '/focus': typeof FocusRoute
+  '/honor': typeof HonorRoute
   '/library': typeof LibraryRouteWithChildren
+  '/link-device': typeof LinkDeviceRoute
   '/notes': typeof NotesRoute
   '/profile': typeof ProfileRoute
   '/statistics': typeof StatisticsRoute
@@ -228,8 +254,10 @@ export interface FileRoutesByFullPath {
   '/updates': typeof UpdatesRoute
   '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
+  '/flashcards/$subject': typeof FlashcardsSubjectRoute
   '/champions/': typeof ChampionsIndexRoute
   '/exams/': typeof ExamsIndexRoute
+  '/flashcards/': typeof FlashcardsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/videos/': typeof VideosIndexRoute
   '/champions/exam/$round': typeof ChampionsExamRoundRoute
@@ -250,6 +278,8 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/dashboard': typeof DashboardRoute
   '/focus': typeof FocusRoute
+  '/honor': typeof HonorRoute
+  '/link-device': typeof LinkDeviceRoute
   '/notes': typeof NotesRoute
   '/profile': typeof ProfileRoute
   '/statistics': typeof StatisticsRoute
@@ -259,8 +289,10 @@ export interface FileRoutesByTo {
   '/translator': typeof TranslatorRoute
   '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
+  '/flashcards/$subject': typeof FlashcardsSubjectRoute
   '/champions': typeof ChampionsIndexRoute
   '/exams': typeof ExamsIndexRoute
+  '/flashcards': typeof FlashcardsIndexRoute
   '/library': typeof LibraryIndexRoute
   '/videos': typeof VideosIndexRoute
   '/champions/exam/$round': typeof ChampionsExamRoundRoute
@@ -283,7 +315,9 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/exams': typeof ExamsRouteWithChildren
   '/focus': typeof FocusRoute
+  '/honor': typeof HonorRoute
   '/library': typeof LibraryRouteWithChildren
+  '/link-device': typeof LinkDeviceRoute
   '/notes': typeof NotesRoute
   '/profile': typeof ProfileRoute
   '/statistics': typeof StatisticsRoute
@@ -294,8 +328,10 @@ export interface FileRoutesById {
   '/updates': typeof UpdatesRoute
   '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
+  '/flashcards/$subject': typeof FlashcardsSubjectRoute
   '/champions/': typeof ChampionsIndexRoute
   '/exams/': typeof ExamsIndexRoute
+  '/flashcards/': typeof FlashcardsIndexRoute
   '/library/': typeof LibraryIndexRoute
   '/videos/': typeof VideosIndexRoute
   '/champions/exam/$round': typeof ChampionsExamRoundRoute
@@ -319,7 +355,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exams'
     | '/focus'
+    | '/honor'
     | '/library'
+    | '/link-device'
     | '/notes'
     | '/profile'
     | '/statistics'
@@ -330,8 +368,10 @@ export interface FileRouteTypes {
     | '/updates'
     | '/videos'
     | '/exams/$examId'
+    | '/flashcards/$subject'
     | '/champions/'
     | '/exams/'
+    | '/flashcards/'
     | '/library/'
     | '/videos/'
     | '/champions/exam/$round'
@@ -352,6 +392,8 @@ export interface FileRouteTypes {
     | '/community'
     | '/dashboard'
     | '/focus'
+    | '/honor'
+    | '/link-device'
     | '/notes'
     | '/profile'
     | '/statistics'
@@ -361,8 +403,10 @@ export interface FileRouteTypes {
     | '/translator'
     | '/updates'
     | '/exams/$examId'
+    | '/flashcards/$subject'
     | '/champions'
     | '/exams'
+    | '/flashcards'
     | '/library'
     | '/videos'
     | '/champions/exam/$round'
@@ -384,7 +428,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/exams'
     | '/focus'
+    | '/honor'
     | '/library'
+    | '/link-device'
     | '/notes'
     | '/profile'
     | '/statistics'
@@ -395,8 +441,10 @@ export interface FileRouteTypes {
     | '/updates'
     | '/videos'
     | '/exams/$examId'
+    | '/flashcards/$subject'
     | '/champions/'
     | '/exams/'
+    | '/flashcards/'
     | '/library/'
     | '/videos/'
     | '/champions/exam/$round'
@@ -419,7 +467,9 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   ExamsRoute: typeof ExamsRouteWithChildren
   FocusRoute: typeof FocusRoute
+  HonorRoute: typeof HonorRoute
   LibraryRoute: typeof LibraryRouteWithChildren
+  LinkDeviceRoute: typeof LinkDeviceRoute
   NotesRoute: typeof NotesRoute
   ProfileRoute: typeof ProfileRoute
   StatisticsRoute: typeof StatisticsRoute
@@ -429,7 +479,9 @@ export interface RootRouteChildren {
   TranslatorRoute: typeof TranslatorRoute
   UpdatesRoute: typeof UpdatesRoute
   VideosRoute: typeof VideosRouteWithChildren
+  FlashcardsSubjectRoute: typeof FlashcardsSubjectRoute
   ChampionsIndexRoute: typeof ChampionsIndexRoute
+  FlashcardsIndexRoute: typeof FlashcardsIndexRoute
   ChampionsExamRoundRoute: typeof ChampionsExamRoundRoute
   ChampionsMatchMatchIdRoute: typeof ChampionsMatchMatchIdRoute
 }
@@ -499,11 +551,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FocusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/honor': {
+      id: '/honor'
+      path: '/honor'
+      fullPath: '/honor'
+      preLoaderRoute: typeof HonorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/library': {
       id: '/library'
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/link-device': {
+      id: '/link-device'
+      path: '/link-device'
+      fullPath: '/link-device'
+      preLoaderRoute: typeof LinkDeviceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notes': {
@@ -589,6 +655,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/exams/$examId'
       preLoaderRoute: typeof ExamsExamIdRouteImport
       parentRoute: typeof ExamsRoute
+    }
+    '/flashcards/': {
+      id: '/flashcards/'
+      path: '/flashcards'
+      fullPath: '/flashcards/'
+      preLoaderRoute: typeof FlashcardsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flashcards/$subject': {
+      id: '/flashcards/$subject'
+      path: '/flashcards/$subject'
+      fullPath: '/flashcards/$subject'
+      preLoaderRoute: typeof FlashcardsSubjectRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/library/': {
       id: '/library/'
@@ -719,7 +799,9 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   ExamsRoute: ExamsRouteWithChildren,
   FocusRoute: FocusRoute,
+  HonorRoute: HonorRoute,
   LibraryRoute: LibraryRouteWithChildren,
+  LinkDeviceRoute: LinkDeviceRoute,
   NotesRoute: NotesRoute,
   ProfileRoute: ProfileRoute,
   StatisticsRoute: StatisticsRoute,
@@ -729,7 +811,9 @@ const rootRouteChildren: RootRouteChildren = {
   TranslatorRoute: TranslatorRoute,
   UpdatesRoute: UpdatesRoute,
   VideosRoute: VideosRouteWithChildren,
+  FlashcardsSubjectRoute: FlashcardsSubjectRoute,
   ChampionsIndexRoute: ChampionsIndexRoute,
+  FlashcardsIndexRoute: FlashcardsIndexRoute,
   ChampionsExamRoundRoute: ChampionsExamRoundRoute,
   ChampionsMatchMatchIdRoute: ChampionsMatchMatchIdRoute,
 }

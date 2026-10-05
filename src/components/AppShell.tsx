@@ -10,6 +10,7 @@ import {
   Sun,
   User as UserIcon,
   X,
+  Trophy,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -19,6 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { StudyHubLogo } from "@/components/StudyHubLogo";
 import { SmartAssistant } from "@/components/SmartAssistant";
+import { BottomNav, LevelUpDialog, ShardsCounter } from "@/components/Gamification";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -74,6 +76,13 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
         );
       })}
       <div className="my-2 h-px bg-sidebar-border" />
+      <Link
+        to="/honor"
+        onClick={onNavigate}
+        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sidebar-foreground/80 hover:bg-sidebar-accent"
+      >
+        <Trophy className="size-4.5" /> Top 10 / Honor Board
+      </Link>
       <Link
         to="/profile"
         onClick={onNavigate}
@@ -199,7 +208,7 @@ export function AppShell({
         </div>
       )}
 
-      <div className="lg:pl-64">
+      <div className="pb-16 lg:pl-64 lg:pb-0">
         <header className="sticky top-0 z-20 flex items-center gap-2 border-b border-border bg-background/85 px-4 py-3 backdrop-blur">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setOpen(true)}>
             <Menu className="size-5" />
@@ -211,6 +220,7 @@ export function AppShell({
             <StudyHubLogo compact secretAccess />
           </div>
           <div className="ml-auto flex items-center gap-1">
+            <ShardsCounter />
             <NotificationsBell />
             <Button variant="ghost" size="icon" onClick={toggle} aria-label="Toggle dark mode">
               {isDark ? <Moon className="size-5" /> : <Sun className="size-5" />}
@@ -268,6 +278,8 @@ export function AppShell({
       </div>
 
       <SmartAssistant />
+      <BottomNav />
+      <LevelUpDialog />
     </div>
   );
 }
