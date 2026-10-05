@@ -42,7 +42,7 @@ export function SmartAssistant() {
         <button
           onClick={() => setOpen(true)}
           aria-label="Smart Assistant"
-          className="mascot-glow fixed right-5 bottom-5 z-40 flex size-16 items-center justify-center rounded-full bg-sidebar/90 p-1"
+          className="mascot-glow fixed right-5 bottom-20 lg:bottom-5 z-40 flex size-16 items-center justify-center rounded-full bg-sidebar/90 p-1"
         >
           <img
             src={mascot.url}
@@ -52,7 +52,7 @@ export function SmartAssistant() {
         </button>
       )}
       {open && (
-        <div className="hub-card fixed right-4 bottom-4 z-40 flex h-[26rem] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden">
+        <div className="hub-card fixed right-4 bottom-20 lg:bottom-4 z-40 flex h-[26rem] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden">
           <div className="flex items-center gap-2 border-b border-border px-4 py-3">
             <Bot className="size-5 text-primary" />
             <span className="font-display text-sm font-bold">Smart Assistant</span>
