@@ -122,6 +122,7 @@
   --tone-red: linear-gradient(140deg, oklch(0.6 0.22 25), oklch(0.48 0.2 22));
   --tone-turquoise: linear-gradient(140deg, oklch(0.88 0.1 190), oklch(0.79 0.12 195));
   --tone-magenta: linear-gradient(140deg, oklch(0.62 0.26 335), oklch(0.48 0.24 330));
+  --tone-bluegray: linear-gradient(140deg, oklch(0.6 0.04 250), oklch(0.46 0.045 255));
 }
 
 /* Dark mode (toggled by the Dark Mode switch) */
@@ -312,4 +313,8 @@
 
 @utility tone-magenta {
   background-image: var(--tone-magenta);
+}
+
+@utility tone-bluegray {
+  background-image: var(--tone-bluegray);
 }
