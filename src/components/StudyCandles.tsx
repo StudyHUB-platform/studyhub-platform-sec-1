@@ -19,8 +19,8 @@ export function StudyCandles({ sessions }: { sessions: S[] }) {
   const y = (v: number) => H - pad - (v / max) * (H - pad * 2);
   if (!sessions.length) return <p className="text-sm text-muted-foreground">لا توجد جلسات مذاكرة بعد — ابدأ من Study Focus.</p>;
   return (
-    <div className="overflow-x-auto rounded-xl bg-sidebar p-2">
-      <svg viewBox={`0 0 ${W} ${H}`} className="min-w-[560px] w-full" dir="ltr">
+    <div className="overflow-x-auto rounded-xl bg-sidebar p-2" dir="ltr">
+      <svg viewBox={`0 0 ${W} ${H}`} className="min-w-[560px] w-full">
         {[0, 0.25, 0.5, 0.75, 1].map((f) => (
           <g key={f}>
             <line x1={pad} x2={W - pad} y1={y(max * f)} y2={y(max * f)} stroke="currentColor" className="text-sidebar-border" strokeDasharray="3 3" />
