@@ -5,6 +5,8 @@ import { BarChart3, CheckCircle2, FileText, Timer, XCircle } from "lucide-react"
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Progress } from "@/components/ui/progress";
+import { useMyStats } from "@/hooks/useMyStats";
+import { StudyCandles } from "@/components/StudyCandles";
 
 export const Route = createFileRoute("/statistics")({
   head: () => ({
@@ -42,6 +44,7 @@ function StatCard({
 }
 
 function StatsPage() {
+  const { data: my } = useMyStats();
   const { data } = useQuery({
     queryKey: ["stats"],
     queryFn: async () => {
@@ -83,13 +86,35 @@ function StatsPage() {
 
   return (
     <AppShell title="📊 Statistics" subtitle="تقدمك الدراسي بالأرقام">
+      <div className="tone-card tone-orange mb-5 flex flex-wrap items-center gap-4 p-5">
+        <span className="text-5xl">🔥</span>
+        <div className="flex-1">
+          <p className="text-xs font-bold opacity-80">Weekly Streak</p>
+          <p className="font-display text-3xl font-extrabold">{my?.streak ?? 0} يوم</p>
+          <p className="text-xs opacity-80">
+            {my?.studied_today ? "✅ ذاكرت النهارده" : "ذاكر النهارده عشان تحافظ على الـStreak"} — كل 7 أيام متتالية = +200 Shards 🧩
+          </p>
+        </div>
+        <div className="flex gap-1">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <span key={i} className={i < (my?.streak ?? 0) % 7 || ((my?.streak ?? 0) > 0 && (my?.streak ?? 0) % 7 === 0) ? "text-xl" : "text-xl opacity-25 grayscale"}>🔥</span>
+          ))}
+        </div>
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard icon={Timer} label="دقائق التركيز" value={String(minutes)} hint={`${data?.sessions.length ?? 0} جلسة`} />
         <StatCard icon={CheckCircle2} label="المهام المنجزة" value={`${doneTodos}/${totalTodos}`} />
         <StatCard icon={FileText} label="الامتحانات" value={String(data?.attempts.length ?? 0)} />
-        <StatCard icon={BarChart3} label="متوسط النتائج" value={`${avg}%`} />
+        <StatCard icon={BarChart3} label="Average Grades — متوسط الدرجات" value={`${avg}%`} />
         <StatCard icon={CheckCircle2} label="الإجابات الصحيحة" value={String(correct)} hint="من كل الامتحانات" />
         <StatCard icon={XCircle} label="الإجابات الخاطئة" value={String(wrong)} hint="من كل الامتحانات" />
+      </div>
+
+      <div className="hub-card mt-5 p-5">
+        <p className="font-display mb-1 font-bold">📈 Study Progress — آخر 30 يوم</p>
+        <p className="mb-3 text-xs text-muted-foreground">كل شمعة توضح صعود (أخضر) أو هبوط (أحمر) دقائق المذاكرة عن اليوم السابق.</p>
+        <StudyCandles sessions={data?.sessions ?? []} />
       </div>
 
       <div className="hub-card mt-5 p-5">

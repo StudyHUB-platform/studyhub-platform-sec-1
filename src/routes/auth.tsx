@@ -4,7 +4,10 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Phone, UserPlus } from "lucide-react";
 
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
+import { phoneAvailable, signInWithPhone } from "@/lib/account.functions";
+import { QrScanButton } from "@/components/QrScan";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/useAuth";
 import { StudyHubLogo } from "@/components/StudyHubLogo";
@@ -41,6 +44,8 @@ function AuthPage() {
   const search = Route.useSearch();
   const [tab, setTab] = useState(search.mode === "signin" ? "signin" : "signup");
   const [busy, setBusy] = useState(false);
+  const phoneSignIn = useServerFn(signInWithPhone);
+  const checkPhone = useServerFn(phoneAvailable);
 
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -66,6 +71,12 @@ function AuthPage() {
     }
     setBusy(true);
     const digits = parsed.data;
+    const avail = await checkPhone({ data: { phone: digits } }).catch(() => null);
+    if (avail && !avail.available) {
+      setBusy(false);
+      toast.error("رقم الهاتف مسجّل بالفعل — سجّل الدخول بدل إنشاء حساب جديد");
+      return;
+    }
     const { data, error } = await supabase.auth.signUp({
       email: phoneToEmail(digits),
       password,
@@ -97,12 +108,15 @@ function AuthPage() {
       return;
     }
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: phoneToEmail(parsed.data),
-      password,
-    });
+    const r = await phoneSignIn({ data: { phone: parsed.data, password } }).catch(() => null);
+    if (!r || !r.ok) {
+      setBusy(false);
+      toast.error("رقم الهاتف أو كلمة المرور غير صحيحة");
+      return;
+    }
+    const { error } = await supabase.auth.setSession({ access_token: r.access_token, refresh_token: r.refresh_token });
     setBusy(false);
-    if (error) toast.error("رقم الهاتف أو كلمة المرور غير صحيحة");
+    if (error) toast.error("تعذّر تسجيل الدخول");
   };
 
   const google = async () => {
@@ -179,6 +193,9 @@ function AuthPage() {
           <Button variant="outline" className="w-full font-semibold" onClick={() => void google()}>
             Continue with Google
           </Button>
+          <div className="mt-2">
+            <QrScanButton label="Scan — ربط من جهاز آخر" />
+          </div>
         </div>
         <p className="mt-6 text-center text-xs text-muted-foreground">
           © Study HUB | Developed by Ahmed Shaaban &amp; Retaj Mohamed
