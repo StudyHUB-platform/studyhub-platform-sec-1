@@ -78,6 +78,7 @@ export function ShardsCounter() {
       return () => clearTimeout(t);
     }
     last.current = shards;
+    return undefined;
   }, [shards]);
   if (!data) return null;
   return (
@@ -103,7 +104,7 @@ export function LevelUpDialog() {
     playRewardSound();
     setDismissed(to);
     // optimistic update so the counter animates immediately
-    qc.setQueryData(["my-stats"], (old: unknown) =>
+    qc.setQueriesData({ queryKey: ["my-stats"] }, (old: unknown) =>
       old && typeof old === "object" ? { ...(old as object), level: to, shards: (old as { shards: number }).shards + reward } : old,
     );
     const { error } = await supabase.rpc("claim_level_up");
