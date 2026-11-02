@@ -15,7 +15,11 @@ type AuthValue = {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
+  /** "owner" | "admin" | null — read from the roles table, never from storage. */
+  role: "owner" | "admin" | null;
+  /** True for owner or admin (staff). */
   isAdmin: boolean;
+  isOwner: boolean;
   loading: boolean;
   refreshProfile: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -25,7 +29,9 @@ const AuthContext = createContext<AuthValue>({
   session: null,
   user: null,
   profile: null,
+  role: null,
   isAdmin: false,
+  isOwner: false,
   loading: true,
   refreshProfile: async () => {},
   signOut: async () => {},
@@ -34,7 +40,7 @@ const AuthContext = createContext<AuthValue>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [role, setRole] = useState<"owner" | "admin" | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadExtras = async (userId: string) => {
@@ -49,11 +55,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (prof && (prof as Profile).is_banned) {
       await supabase.auth.signOut();
       setProfile(null);
-      setIsAdmin(false);
+      setRole(null);
       return;
     }
     setProfile((prof as Profile) ?? null);
-    setIsAdmin(Boolean(roles?.some((r) => r.role === "admin")));
+    const staffRole = (roles ?? []).some((r) => r.role === "owner")
+      ? "owner"
+      : (roles ?? []).some((r) => r.role === "admin")
+        ? "admin"
+        : null;
+    setRole(staffRole);
   };
 
   useEffect(() => {
@@ -63,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         void loadExtras(newSession.user.id);
       } else {
         setProfile(null);
-        setIsAdmin(false);
+        setRole(null);
       }
       setLoading(false);
     });
@@ -81,7 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     session,
     user: session?.user ?? null,
     profile,
-    isAdmin,
+    role,
+    isAdmin: role === "owner" || role === "admin",
+    isOwner: role === "owner",
     loading,
     refreshProfile: async () => {
       if (session?.user) await loadExtras(session.user.id);
