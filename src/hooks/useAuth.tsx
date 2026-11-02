@@ -15,7 +15,11 @@ type AuthValue = {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
+  /** "owner" | "admin" | null — read from the roles table, never from storage. */
+  role: "owner" | "admin" | null;
+  /** True for owner or admin (staff). */
   isAdmin: boolean;
+  isOwner: boolean;
   loading: boolean;
   refreshProfile: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -25,7 +29,9 @@ const AuthContext = createContext<AuthValue>({
   session: null,
   user: null,
   profile: null,
+  role: null,
   isAdmin: false,
+  isOwner: false,
   loading: true,
   refreshProfile: async () => {},
   signOut: async () => {},
