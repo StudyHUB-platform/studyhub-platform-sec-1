@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor: string
+          created_at: string
+          details: Json
+          id: string
+        }
+        Insert: {
+          action: string
+          actor: string
+          created_at?: string
+          details?: Json
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor?: string
+          created_at?: string
+          details?: Json
+          id?: string
+        }
+        Relationships: []
+      }
       admin_tips: {
         Row: {
           content: string
@@ -644,6 +668,42 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_sections: {
+        Row: {
+          is_visible: boolean
+          key: string
+          updated_at: string
+        }
+        Insert: {
+          is_visible?: boolean
+          key: string
+          updated_at?: string
+        }
+        Update: {
+          is_visible?: boolean
+          key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      platform_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       platform_updates: {
         Row: {
           content: string
@@ -1125,7 +1185,7 @@ export type Database = {
       my_stats: { Args: never; Returns: Json }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "owner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1253,7 +1313,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "owner"],
     },
   },
 } as const
