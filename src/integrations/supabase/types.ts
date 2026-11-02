@@ -1105,6 +1105,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_first_owner: { Args: never; Returns: undefined }
       award: {
         Args: {
           _kind: string
@@ -1162,6 +1163,10 @@ export type Database = {
       create_device_link: { Args: never; Returns: string }
       ensure_user_stats: { Args: { _uid: string }; Returns: undefined }
       gen_public_id: { Args: never; Returns: string }
+      grant_role: {
+        Args: { _role: Database["public"]["Enums"]["app_role"]; _user: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1180,9 +1185,15 @@ export type Database = {
         }[]
       }
       is_admin: { Args: never; Returns: boolean }
+      is_owner: { Args: never; Returns: boolean }
+      is_staff: { Args: never; Returns: boolean }
       level_for_xp: { Args: { _xp: number }; Returns: number }
       level_xp_required: { Args: { _l: number }; Returns: number }
       my_stats: { Args: never; Returns: Json }
+      revoke_role: {
+        Args: { _role: Database["public"]["Enums"]["app_role"]; _user: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "owner"

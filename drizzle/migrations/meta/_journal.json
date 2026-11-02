@@ -43,6 +43,13 @@
       "when": 1793592713662,
       "tag": "0005_add_owner_role_enum_and_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793592730359,
+      "tag": "0006_role_helpers_owner_assignment",
+      "breakpoints": true
     }
   ]
 }
