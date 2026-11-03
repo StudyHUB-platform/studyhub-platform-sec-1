@@ -27,8 +27,13 @@ async function assertOwner(userId: string) {
   return staff;
 }
 
-async function logAdminAction(admin: NonNullable<Awaited<ReturnType<typeof assertStaff>>["admin"]>, actor: string, action: string, details: Record<string, unknown>) {
-  await admin.from("admin_audit_log").insert({ actor, action, details });
+async function logAdminAction(
+  admin: NonNullable<Awaited<ReturnType<typeof assertStaff>>["admin"]>,
+  actor: string,
+  action: string,
+  details: Record<string, unknown>,
+) {
+  await admin.from("admin_audit_log").insert({ actor, action, details: details as never });
 }
 
 /** Who am I on the server (owner/admin/student) — used to gate admin UI. */
@@ -55,7 +60,7 @@ export const listAccountsForRoles = createServerFn({ method: "GET" })
     const { admin } = await assertOwner(context.userId);
     let query = admin
       .from("profiles")
-      .select("id, full_name, email, phone, is_banned, created_at, user_roles(role)")
+      .select("id, full_name, email, phone, is_banned, created_at")
       .order("created_at", { ascending: false })
       .limit(data.limit);
     if (data.search?.trim()) {
@@ -63,7 +68,18 @@ export const listAccountsForRoles = createServerFn({ method: "GET" })
     }
     const { data: rows, error } = await query;
     if (error) throw new Error(error.message);
-    return rows;
+    const ids = (rows ?? []).map((r) => r.id);
+    const { data: roles } = await admin
+      .from("user_roles")
+      .select("user_id, role")
+      .in("user_id", ids.length ? ids : ["00000000-0000-0000-0000-000000000000"]);
+    const byUser = new Map<string, string[]>();
+    for (const r of roles ?? []) {
+      const list = byUser.get(r.user_id) ?? [];
+      list.push(r.role);
+      byUser.set(r.user_id, list);
+    }
+    return (rows ?? []).map((r) => ({ ...r, roles: byUser.get(r.id) ?? [] }));
   });
 
 /** Owner-only: grant owner/admin/student role. Server enforces last-owner safety. */
