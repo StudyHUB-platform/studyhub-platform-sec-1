@@ -25,7 +25,7 @@ type AccountRow = {
   phone: string | null;
   is_banned: boolean;
   created_at: string;
-  user_roles: { role: string }[] | null;
+  roles: string[];
 };
 
 const roleLabel: Record<string, string> = {
@@ -105,9 +105,9 @@ export function RolesAdmin() {
 
       <div className="space-y-2">
         {rows.map((row) => {
-          const role = row.user_roles?.some((r) => r.role === "owner")
+          const role = row.roles.includes("owner")
             ? "owner"
-            : row.user_roles?.some((r) => r.role === "admin")
+            : row.roles.includes("admin")
               ? "admin"
               : "user";
           return (
