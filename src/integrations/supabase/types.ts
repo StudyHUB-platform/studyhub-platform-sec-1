@@ -733,6 +733,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_id: number
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -743,6 +744,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          avatar_id?: number
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -753,6 +755,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          avatar_id?: number
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -1177,9 +1180,11 @@ export type Database = {
       honor_board: {
         Args: never
         Returns: {
+          avatar_id: number
           is_me: boolean
           level: number
           name: string
+          public_id: string
           rank: number
           shards: number
         }[]

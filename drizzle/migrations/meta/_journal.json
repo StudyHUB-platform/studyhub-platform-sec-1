@@ -57,6 +57,20 @@
       "when": 1793592743071,
       "tag": "0007_fix_revoke_role_self",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793677690503,
+      "tag": "0008_profiles_avatar_id",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793677712296,
+      "tag": "0009_honor_board_avatar",
+      "breakpoints": true
     }
   ]
 }

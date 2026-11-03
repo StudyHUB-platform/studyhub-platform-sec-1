@@ -1,10 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { ShieldAlert } from "lucide-react";
 
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
-import { ADMIN_UNLOCK_KEY } from "@/components/StudyHubLogo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   AnnouncementsAdmin,
@@ -16,6 +14,15 @@ import { ExamsAdmin, SupportAdmin } from "@/components/admin/ExamsAdmin";
 import { StudentsAdmin } from "@/components/admin/StudentsAdmin";
 import { VideosAdmin } from "@/components/admin/VideosAdmin";
 import { ChampionsAdmin } from "@/components/admin/ChampionsAdmin";
+import {
+  AuditLogAdmin,
+  PlatformSettingsAdmin,
+  RolesAdmin,
+} from "@/components/admin/RolesAdmin";
+import { StudyHubAIStudio } from "@/components/admin/StudyHubAIStudio";
+import { VideoDiscoveryAdmin } from "@/components/admin/VideoDiscoveryAdmin";
+import { AcademyAdmin } from "@/components/admin/AcademyAdmin";
+import { FriendsBattlesAdmin } from "@/components/admin/FriendsBattlesAdmin";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -32,19 +39,15 @@ export const Route = createFileRoute("/admin")({
 
 function AdminPage() {
   const { isAdmin, loading } = useAuth();
-  const [unlocked, setUnlocked] = useState(false);
-  useEffect(() => {
-    setUnlocked(sessionStorage.getItem(ADMIN_UNLOCK_KEY) === "1");
-  }, []);
 
-  if (!loading && !isAdmin && !unlocked) {
+  if (!loading && !isAdmin) {
     return (
       <AppShell title="🔐 Admin Panel">
         <div className="hub-card mx-auto max-w-md p-8 text-center">
           <ShieldAlert className="mx-auto size-10 text-destructive" />
           <p className="font-display mt-3 text-lg font-bold">غير مسموح بالدخول</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            هذه الصفحة للأدمن فقط. اضغط على اللوجو 10 مرات واكتب كلمة سر الأدمن.
+            هذه الصفحة لأصحاب أدوار Admin أو Owner فقط.
           </p>
         </div>
       </AppShell>
@@ -56,21 +59,31 @@ function AdminPage() {
       <Tabs defaultValue="students">
         <TabsList className="flex h-auto flex-wrap justify-start gap-1">
           <TabsTrigger value="students">👥 الطلاب</TabsTrigger>
+          <TabsTrigger value="roles">👑 الأدوار والصلاحيات</TabsTrigger>
           <TabsTrigger value="library">📚 المكتبة</TabsTrigger>
           <TabsTrigger value="videos">🎬 الفيديوهات</TabsTrigger>
+          <TabsTrigger value="discovery">🔍 اكتشاف الفيديوهات</TabsTrigger>
+          <TabsTrigger value="academy">🎓 Academy</TabsTrigger>
+          <TabsTrigger value="aistudio">🧠 AI Studio</TabsTrigger>
           <TabsTrigger value="exams">📝 الامتحانات</TabsTrigger>
           <TabsTrigger value="champions">🏆 Champions League</TabsTrigger>
+          <TabsTrigger value="battles">⚔️ Battles</TabsTrigger>
           <TabsTrigger value="teachers">👨‍🏫 المعلمون</TabsTrigger>
           <TabsTrigger value="community">👥 المجتمع</TabsTrigger>
           <TabsTrigger value="notifications">🔔 الإشعارات</TabsTrigger>
           <TabsTrigger value="updates">📰 التحديثات</TabsTrigger>
           <TabsTrigger value="tips">💡 نصيحة اليوم</TabsTrigger>
           <TabsTrigger value="support">🆘 الدعم</TabsTrigger>
+          <TabsTrigger value="sections">🎛️ ظهور الأقسام</TabsTrigger>
+          <TabsTrigger value="audit">🧾 سجل الإجراءات</TabsTrigger>
         </TabsList>
 
         <div className="mt-4">
           <TabsContent value="students">
             <StudentsAdmin />
+          </TabsContent>
+          <TabsContent value="roles">
+            <RolesAdmin />
           </TabsContent>
           <TabsContent value="library">
             <LibraryAdmin />
@@ -78,11 +91,23 @@ function AdminPage() {
           <TabsContent value="videos">
             <VideosAdmin />
           </TabsContent>
+          <TabsContent value="discovery">
+            <VideoDiscoveryAdmin />
+          </TabsContent>
+          <TabsContent value="academy">
+            <AcademyAdmin />
+          </TabsContent>
+          <TabsContent value="aistudio">
+            <StudyHubAIStudio />
+          </TabsContent>
           <TabsContent value="exams">
             <ExamsAdmin />
           </TabsContent>
           <TabsContent value="champions">
             <ChampionsAdmin />
+          </TabsContent>
+          <TabsContent value="battles">
+            <FriendsBattlesAdmin />
           </TabsContent>
           <TabsContent value="teachers">
             <TeachersAdmin />
@@ -101,6 +126,12 @@ function AdminPage() {
           </TabsContent>
           <TabsContent value="support">
             <SupportAdmin />
+          </TabsContent>
+          <TabsContent value="sections">
+            <PlatformSettingsAdmin />
+          </TabsContent>
+          <TabsContent value="audit">
+            <AuditLogAdmin />
           </TabsContent>
         </div>
       </Tabs>
