@@ -1180,9 +1180,11 @@ export type Database = {
       honor_board: {
         Args: never
         Returns: {
+          avatar_id: number
           is_me: boolean
           level: number
           name: string
+          public_id: string
           rank: number
           shards: number
         }[]
