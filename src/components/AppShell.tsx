@@ -307,10 +307,6 @@ export function AppShell({
   );
 }
 
-function GuestHint() {
-  return null;
-}
-
 /** Footer with the Developers credit — can be hidden from the admin panel. */
 function DevelopersFooter() {
   const { data: vis } = usePlatformVisibility();
