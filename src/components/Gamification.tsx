@@ -1,14 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Home, Puzzle, Trophy, User as UserIcon } from "lucide-react";
+import { BookOpen, Crown, Home, LayoutGrid, Puzzle, Shield, Swords, User as UserIcon } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useMyStats } from "@/hooks/useMyStats";
+import { usePlatformVisibility, useVisibleFeatures } from "@/hooks/usePlatformVisibility";
+import { useAuth } from "@/hooks/useAuth";
 import { levelInfo } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export function LevelBadge({ level, className }: { level: number; className?: string }) {
   const info = levelInfo(level);
