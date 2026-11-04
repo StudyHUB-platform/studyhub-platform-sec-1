@@ -273,7 +273,7 @@ export function AppShell({
             <h1 className="font-display text-2xl font-extrabold md:text-3xl">{title}</h1>
             {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
           </div>
-          {session && (
+          {!session && (
             <p className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
               👋 تقدر تتصفح كزائر — سجّل حساب لحفظ تقدمك
             </p>
@@ -305,10 +305,6 @@ export function AppShell({
       <BottomNav />
     </div>
   );
-}
-
-function GuestHint() {
-  return null;
 }
 
 /** Footer with the Developers credit — can be hidden from the admin panel. */
