@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { AppShell } from "@/components/AppShell";
 
-export const Route = createFileRoute("/battles")({
+export const Route = createFileRoute("/battles/")({
   head: () => ({
     meta: [
       { title: "Battles — Study HUB" },

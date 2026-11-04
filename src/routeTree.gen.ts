@@ -30,6 +30,7 @@ import { Route as TodoRouteImport } from './routes/todo'
 import { Route as TranslatorRouteImport } from './routes/translator'
 import { Route as UpdatesRouteImport } from './routes/updates'
 import { Route as VideosRouteImport } from './routes/videos'
+import { Route as BattlesIndexRouteImport } from './routes/battles.index'
 import { Route as ChampionsIndexRouteImport } from './routes/champions.index'
 import { Route as ExamsIndexRouteImport } from './routes/exams.index'
 import { Route as ExamsExamIdRouteImport } from './routes/exams.$examId'
@@ -151,6 +152,11 @@ const VideosRoute = VideosRouteImport.update({
   path: '/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BattlesIndexRoute = BattlesIndexRouteImport.update({
+  id: '/battles/',
+  path: '/battles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChampionsIndexRoute = ChampionsIndexRouteImport.update({
   id: '/champions/',
   path: '/champions/',
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
   '/flashcards/$subject': typeof FlashcardsSubjectRoute
+  '/battles/': typeof BattlesIndexRoute
   '/champions/': typeof ChampionsIndexRoute
   '/exams/': typeof ExamsIndexRoute
   '/flashcards/': typeof FlashcardsIndexRoute
@@ -290,6 +297,7 @@ export interface FileRoutesByTo {
   '/updates': typeof UpdatesRoute
   '/exams/$examId': typeof ExamsExamIdRoute
   '/flashcards/$subject': typeof FlashcardsSubjectRoute
+  '/battles': typeof BattlesIndexRoute
   '/champions': typeof ChampionsIndexRoute
   '/exams': typeof ExamsIndexRoute
   '/flashcards': typeof FlashcardsIndexRoute
@@ -329,6 +337,7 @@ export interface FileRoutesById {
   '/videos': typeof VideosRouteWithChildren
   '/exams/$examId': typeof ExamsExamIdRoute
   '/flashcards/$subject': typeof FlashcardsSubjectRoute
+  '/battles/': typeof BattlesIndexRoute
   '/champions/': typeof ChampionsIndexRoute
   '/exams/': typeof ExamsIndexRoute
   '/flashcards/': typeof FlashcardsIndexRoute
@@ -369,6 +378,7 @@ export interface FileRouteTypes {
     | '/videos'
     | '/exams/$examId'
     | '/flashcards/$subject'
+    | '/battles/'
     | '/champions/'
     | '/exams/'
     | '/flashcards/'
@@ -404,6 +414,7 @@ export interface FileRouteTypes {
     | '/updates'
     | '/exams/$examId'
     | '/flashcards/$subject'
+    | '/battles'
     | '/champions'
     | '/exams'
     | '/flashcards'
@@ -442,6 +453,7 @@ export interface FileRouteTypes {
     | '/videos'
     | '/exams/$examId'
     | '/flashcards/$subject'
+    | '/battles/'
     | '/champions/'
     | '/exams/'
     | '/flashcards/'
@@ -480,6 +492,7 @@ export interface RootRouteChildren {
   UpdatesRoute: typeof UpdatesRoute
   VideosRoute: typeof VideosRouteWithChildren
   FlashcardsSubjectRoute: typeof FlashcardsSubjectRoute
+  BattlesIndexRoute: typeof BattlesIndexRoute
   ChampionsIndexRoute: typeof ChampionsIndexRoute
   FlashcardsIndexRoute: typeof FlashcardsIndexRoute
   ChampionsExamRoundRoute: typeof ChampionsExamRoundRoute
@@ -633,6 +646,13 @@ declare module '@tanstack/react-router' {
       path: '/videos'
       fullPath: '/videos'
       preLoaderRoute: typeof VideosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/battles/': {
+      id: '/battles/'
+      path: '/battles'
+      fullPath: '/battles/'
+      preLoaderRoute: typeof BattlesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/champions/': {
@@ -812,6 +832,7 @@ const rootRouteChildren: RootRouteChildren = {
   UpdatesRoute: UpdatesRoute,
   VideosRoute: VideosRouteWithChildren,
   FlashcardsSubjectRoute: FlashcardsSubjectRoute,
+  BattlesIndexRoute: BattlesIndexRoute,
   ChampionsIndexRoute: ChampionsIndexRoute,
   FlashcardsIndexRoute: FlashcardsIndexRoute,
   ChampionsExamRoundRoute: ChampionsExamRoundRoute,
