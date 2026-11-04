@@ -273,7 +273,11 @@ export function AppShell({
             <h1 className="font-display text-2xl font-extrabold md:text-3xl">{title}</h1>
             {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
           </div>
-          {session && <GuestHint />}
+          {session && (
+            <p className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+              👋 تقدر تتصفح كزائر — سجّل حساب لحفظ تقدمك
+            </p>
+          )}
           {!visLoading && !visible ? (
             <div className="hub-card mx-auto max-w-md p-8 text-center">
               <p className="font-display text-lg font-bold">🔒 هذا القسم مخفي حاليًا</p>
@@ -322,9 +326,3 @@ function DevelopersFooter() {
   );
 }
 
-function useNavigate() {
-  // Local helper so the file keeps its existing navigation API surface.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const nav = require("@tanstack/react-router").useNavigate as () => ReturnType<typeof import("@tanstack/react-router").useNavigate>;
-  return nav();
-}
