@@ -318,3 +318,117 @@
 @utility tone-bluegray {
   background-image: var(--tone-bluegray);
 }
+
+/* ============ Game UI (New Game design) ============ */
+
+@utility game-card {
+  background-image: var(--gradient-navy);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card);
+}
+
+@utility game-btn {
+  border-radius: var(--radius-xl);
+  font-weight: 800;
+  box-shadow: var(--shadow-gold);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+@utility game-avatar {
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes game-pop-in {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes game-name-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes game-crown-drop {
+  0% {
+    transform: translateY(-140px) rotate(-8deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(6px) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes game-confetti {
+  0% {
+    transform: translateY(-6vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+@keyframes game-slide-up {
+  0% {
+    transform: translateY(18px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@utility anim-pop {
+  animation: game-pop-in 0.35s ease-out both;
+}
+
+@utility anim-slide-up {
+  animation: game-slide-up 0.4s ease-out both;
+}
+
+@utility anim-name-pulse {
+  animation: game-name-pulse 2.2s ease-in-out infinite;
+}
+
+@utility anim-crown-drop {
+  animation: game-crown-drop 1.1s cubic-bezier(0.22, 1.4, 0.4, 1) both;
+}
+
+/* Respect reduced-motion preferences: kill decorative animations */
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop,
+  .anim-slide-up,
+  .anim-name-pulse,
+  .anim-crown-drop,
+  .mascot-float,
+  .mascot-glow {
+    animation: none !important;
+  }
+}

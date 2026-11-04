@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 export function AvatarPicker() {
   const { profile, refreshProfile } = useAuth();
   const qc = useQueryClient();
-  const selected = profile?.avatar_id ?? profile?.avatar_url ? (profile?.avatar_id ?? 1) : 1;
+  const selected = profile?.avatar_id ?? 1;
 
   const save = useMutation({
     mutationFn: async (id: number) => {
@@ -22,12 +22,10 @@ export function AvatarPicker() {
       if (error) throw error;
       return id;
     },
-    onSuccess: async (id) => {
+    onSuccess: async () => {
       toast.success("تم اختيار الشخصية");
-      qc.setQueryData(["platform-visibility"], (old: unknown) => old); // keep cache warm
       await refreshProfile();
       void qc.invalidateQueries({ queryKey: ["honor"] });
-      void qc.invalidateQueries({ queryKey: ["avatar", id] });
     },
     onError: (e: Error) => toast.error(e.message),
   });

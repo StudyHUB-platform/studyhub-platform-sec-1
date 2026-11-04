@@ -1,14 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Home, Puzzle, Trophy, User as UserIcon } from "lucide-react";
+import { BookOpen, Crown, Home, LayoutGrid, Puzzle, Shield, Swords, User as UserIcon } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useMyStats } from "@/hooks/useMyStats";
+import { usePlatformVisibility, useVisibleFeatures } from "@/hooks/usePlatformVisibility";
+import { useAuth } from "@/hooks/useAuth";
 import { levelInfo } from "@/lib/gamification";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export function LevelBadge({ level, className }: { level: number; className?: string }) {
   const info = levelInfo(level);
@@ -135,23 +138,99 @@ export function LevelUpDialog() {
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const items = [
-    { to: "/dashboard", label: "Home", icon: Home },
-    { to: "/honor", label: "Top 10", icon: Trophy },
-    { to: "/profile", label: "Profile", icon: UserIcon },
-  ] as const;
+  const { data: vis } = usePlatformVisibility();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const visibleFeatures = useVisibleFeatures();
+  const { isAdmin } = useAuth();
+
+  const hidden = vis?.hidden;
+  const bar = [
+    { to: "/dashboard", label: "Home", icon: Home, key: null as string | null },
+    { to: "/library", label: "Library", icon: BookOpen, key: "library" },
+    { to: "/battles", label: "Battles", icon: Swords, key: "battles" },
+    { to: "/honor", label: "Rankings", icon: Crown, key: "honor" },
+  ].filter((it) => !it.key || !hidden?.has(it.key));
+
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-sidebar-border bg-sidebar text-sidebar-foreground lg:hidden">
-      {items.map((it) => {
-        const Icon = it.icon;
-        const active = pathname === it.to;
-        return (
-          <Link key={it.to} to={it.to} className={cn("flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-bold", active ? "text-primary" : "opacity-75")}>
-            <Icon className="size-5" />
-            {it.label}
-          </Link>
-        );
-      })}
-    </nav>
+    <>
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-sidebar-border bg-sidebar pb-[env(safe-area-inset-bottom)] text-sidebar-foreground lg:hidden">
+        {bar.map((it) => {
+          const Icon = it.icon;
+          const active = pathname === it.to || (it.key && pathname.startsWith(`${it.to}/`));
+          return (
+            <Link
+              key={it.to}
+              to={it.to}
+              className={cn(
+                "flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-bold transition-colors",
+                active ? "text-primary" : "text-sidebar-foreground/70",
+              )}
+            >
+              <span className={cn("rounded-xl px-2 py-0.5", active && "bg-primary/15")}>
+                <Icon className={cn("size-5", active && "anim-pop")} />
+              </span>
+              {it.label}
+            </Link>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => setMoreOpen(true)}
+          className={cn(
+            "flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-bold transition-colors",
+            moreOpen ? "text-primary" : "text-sidebar-foreground/70",
+          )}
+        >
+          <span className={cn("rounded-xl px-2 py-0.5", moreOpen && "bg-primary/15")}>
+            <LayoutGrid className="size-5" />
+          </span>
+          More
+        </button>
+      </nav>
+
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto rounded-t-3xl bg-sidebar text-sidebar-foreground">
+          <SheetHeader className="pb-1">
+            <SheetTitle className="font-display text-gradient-gold">Explore Study HUB</SheetTitle>
+          </SheetHeader>
+          <div className="grid grid-cols-2 gap-2 pb-6 sm:grid-cols-3">
+            {visibleFeatures.map((f) => {
+              const Icon = f.icon;
+              const active = pathname === f.to || pathname.startsWith(`${f.to}/`);
+              return (
+                <Link
+                  key={f.to}
+                  to={f.to}
+                  onClick={() => setMoreOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2 rounded-2xl border border-sidebar-border bg-sidebar-accent px-3 py-3 text-sm font-bold",
+                    active && "ring-2 ring-primary",
+                  )}
+                >
+                  <Icon className={cn("size-5 shrink-0", active && "text-primary")} />
+                  <span className="truncate">{f.label}</span>
+                </Link>
+              );
+            })}
+            <Link
+              to="/profile"
+              onClick={() => setMoreOpen(false)}
+              className="flex items-center gap-2 rounded-2xl border border-sidebar-border bg-sidebar-accent px-3 py-3 text-sm font-bold"
+            >
+              <UserIcon className="size-5 shrink-0" /> Profile
+            </Link>
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setMoreOpen(false)}
+                className="flex items-center gap-2 rounded-2xl border border-sidebar-border bg-sidebar-accent px-3 py-3 text-sm font-bold"
+              >
+                <Shield className="size-5 shrink-0" /> Admin Panel
+              </Link>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 }
