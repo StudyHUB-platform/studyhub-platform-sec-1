@@ -6,6 +6,7 @@ type Profile = {
   id: string;
   full_name: string | null;
   avatar_url: string | null;
+  avatar_id: number | null;
   phone: string | null;
   email: string | null;
   is_banned: boolean;
@@ -47,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [{ data: prof }, { data: roles }] = await Promise.all([
       supabase
         .from("profiles")
-        .select("id, full_name, avatar_url, phone, email, is_banned")
+        .select("id, full_name, avatar_url, avatar_id, phone, email, is_banned")
         .eq("id", userId)
         .maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", userId),
