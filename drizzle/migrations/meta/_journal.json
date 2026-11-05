@@ -71,6 +71,13 @@
       "when": 1793677712296,
       "tag": "0009_honor_board_avatar",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1793861843771,
+      "tag": "0010_todo_all_complete_bonus",
+      "breakpoints": true
     }
   ]
 }

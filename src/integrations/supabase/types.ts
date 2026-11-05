@@ -1163,6 +1163,7 @@ export type Database = {
       }
       cl_taken_emojis: { Args: never; Returns: string[] }
       claim_level_up: { Args: never; Returns: Json }
+      claim_todo_list_bonus: { Args: never; Returns: boolean }
       create_device_link: { Args: never; Returns: string }
       ensure_user_stats: { Args: { _uid: string }; Returns: undefined }
       gen_public_id: { Args: never; Returns: string }
