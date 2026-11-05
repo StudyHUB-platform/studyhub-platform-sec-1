@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { AppShell } from "@/components/AppShell";
 import { LevelBadge } from "@/components/Gamification";
+import { AvatarPicker } from "@/components/AvatarPicker";
 import { QrScanButton } from "@/components/QrScan";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -152,9 +153,13 @@ function ProfilePage() {
 
         <div className="hub-card space-y-4 p-5">
           <div className="space-y-1.5"><Label>الاسم الكامل</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
-          <p className="text-xs text-muted-foreground">نوع الحساب: {isAdmin ? "👑 Admin" : "🎓 Student"}</p>
+          <p className="text-xs text-muted-foreground">نوع الحساب: {role === "owner" ? "👑 Owner" : role === "admin" ? "🛡️ Admin" : "🎓 Student"}</p>
           <Button className="gradient-gold w-full font-bold" onClick={() => save.mutate()}><Save className="mr-1 size-4" /> حفظ التغييرات</Button>
           <Button variant="outline" className="w-full" onClick={() => void signOut()}><LogOut className="mr-1 size-4" /> تسجيل الخروج</Button>
+        </div>
+
+        <div className="hub-card space-y-3 p-5 md:col-span-2">
+          <AvatarPicker />
         </div>
 
         <PhoneLogin />
