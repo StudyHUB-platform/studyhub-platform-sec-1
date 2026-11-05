@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FEATURES } from "@/lib/hub";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useSectionVisible, useVisibleFeatures } from "@/hooks/usePlatformVisibility";
+import { useSectionVisible, usePlatformVisibility, useVisibleFeatures } from "@/hooks/usePlatformVisibility";
 import { avatarUrl } from "@/lib/avatars";
 import { supabase } from "@/integrations/supabase/client";
 import { StudyHubLogo } from "@/components/StudyHubLogo";
