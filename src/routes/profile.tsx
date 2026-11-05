@@ -102,7 +102,7 @@ function PhoneLogin() {
 }
 
 function ProfilePage() {
-  const { user, profile, isAdmin, signOut } = useAuth();
+  const { user, profile, role, signOut } = useAuth();
   const { data: stats } = useMyStats();
   const qc = useQueryClient();
   const [name, setName] = useState("");
