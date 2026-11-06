@@ -1613,6 +1613,14 @@ export type Database = {
       level_for_xp: { Args: { _xp: number }; Returns: number }
       level_xp_required: { Args: { _l: number }; Returns: number }
       my_stats: { Args: never; Returns: Json }
+      public_profile: {
+        Args: { _ids: string[] }
+        Returns: {
+          avatar_id: number
+          full_name: string
+          id: string
+        }[]
+      }
       revoke_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _user: string }
         Returns: undefined
