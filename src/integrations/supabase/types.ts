@@ -14,6 +14,200 @@ export type Database = {
   }
   public: {
     Tables: {
+      academy_books: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          grade: string
+          id: string
+          source_summary: string | null
+          status: string
+          subject: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          grade?: string
+          id?: string
+          source_summary?: string | null
+          status?: string
+          subject: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          grade?: string
+          id?: string
+          source_summary?: string | null
+          status?: string
+          subject?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      academy_lesson_versions: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          lesson_id: string
+          version: number
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lesson_id: string
+          version: number
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lesson_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_lesson_versions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "academy_lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_lessons: {
+        Row: {
+          completion: number
+          content: Json | null
+          created_at: string
+          error_note: string | null
+          id: string
+          page_end: number | null
+          page_start: number | null
+          position: number
+          status: string
+          title: string
+          unit_id: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          completion?: number
+          content?: Json | null
+          created_at?: string
+          error_note?: string | null
+          id?: string
+          page_end?: number | null
+          page_start?: number | null
+          position?: number
+          status?: string
+          title: string
+          unit_id: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          completion?: number
+          content?: Json | null
+          created_at?: string
+          error_note?: string | null
+          id?: string
+          page_end?: number | null
+          page_start?: number | null
+          position?: number
+          status?: string
+          title?: string
+          unit_id?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_lessons_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "academy_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_source_pages: {
+        Row: {
+          book_id: string
+          content: string
+          created_at: string
+          id: string
+          page_number: number
+          unclear: boolean
+        }
+        Insert: {
+          book_id: string
+          content: string
+          created_at?: string
+          id?: string
+          page_number: number
+          unclear?: boolean
+        }
+        Update: {
+          book_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          page_number?: number
+          unclear?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_source_pages_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "academy_books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academy_units: {
+        Row: {
+          book_id: string
+          created_at: string
+          id: string
+          position: number
+          status: string
+          title: string
+        }
+        Insert: {
+          book_id: string
+          created_at?: string
+          id?: string
+          position?: number
+          status?: string
+          title: string
+        }
+        Update: {
+          book_id?: string
+          created_at?: string
+          id?: string
+          position?: number
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academy_units_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "academy_books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_audit_log: {
         Row: {
           action: string
@@ -59,6 +253,169 @@ export type Database = {
           id?: string
           is_published?: boolean
           title?: string
+        }
+        Relationships: []
+      }
+      battle_answers: {
+        Row: {
+          battle_id: string
+          created_at: string
+          id: string
+          is_correct: boolean
+          ms_taken: number
+          question_id: string
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string
+          id?: string
+          is_correct: boolean
+          ms_taken?: number
+          question_id: string
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          ms_taken?: number
+          question_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_answers_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "battle_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_players: {
+        Row: {
+          battle_id: string
+          id: string
+          joined_at: string
+          ready: boolean
+          score: number
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          id?: string
+          joined_at?: string
+          ready?: boolean
+          score?: number
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          id?: string
+          joined_at?: string
+          ready?: boolean
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_players_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_questions: {
+        Row: {
+          battle_id: string
+          correct_answer: string
+          id: string
+          options: Json
+          position: number
+          question_text: string
+          source_ref: string | null
+        }
+        Insert: {
+          battle_id: string
+          correct_answer: string
+          id?: string
+          options: Json
+          position: number
+          question_text: string
+          source_ref?: string | null
+        }
+        Update: {
+          battle_id?: string
+          correct_answer?: string
+          id?: string
+          options?: Json
+          position?: number
+          question_text?: string
+          source_ref?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_questions_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battles: {
+        Row: {
+          created_at: string
+          creator: string
+          current_q: number
+          finished_at: string | null
+          id: string
+          invite_code: string
+          lesson: string
+          num_questions: number
+          question_started_at: string | null
+          status: string
+          subject: string
+          winner: string | null
+        }
+        Insert: {
+          created_at?: string
+          creator: string
+          current_q?: number
+          finished_at?: string | null
+          id?: string
+          invite_code?: string
+          lesson?: string
+          num_questions?: number
+          question_started_at?: string | null
+          status?: string
+          subject: string
+          winner?: string | null
+        }
+        Update: {
+          created_at?: string
+          creator?: string
+          current_q?: number
+          finished_at?: string | null
+          id?: string
+          invite_code?: string
+          lesson?: string
+          num_questions?: number
+          question_started_at?: string | null
+          status?: string
+          subject?: string
+          winner?: string | null
         }
         Relationships: []
       }
@@ -525,6 +882,33 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_requests: {
+        Row: {
+          created_at: string
+          from_user: string
+          id: string
+          responded_at: string | null
+          status: string
+          to_user: string
+        }
+        Insert: {
+          created_at?: string
+          from_user: string
+          id?: string
+          responded_at?: string | null
+          status?: string
+          to_user: string
+        }
+        Update: {
+          created_at?: string
+          from_user?: string
+          id?: string
+          responded_at?: string | null
+          status?: string
+          to_user?: string
+        }
+        Relationships: []
+      }
       library_items: {
         Row: {
           category: string
@@ -938,6 +1322,39 @@ export type Database = {
           id?: string
           is_done?: boolean
           priority?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          data: Json
+          id: string
+          is_read: boolean
+          kind: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          is_read?: boolean
+          kind: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          is_read?: boolean
+          kind?: string
           title?: string
           user_id?: string
         }
