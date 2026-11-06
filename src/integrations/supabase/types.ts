@@ -1621,6 +1621,14 @@ export type Database = {
           id: string
         }[]
       }
+      public_stats: {
+        Args: { _ids: string[] }
+        Returns: {
+          level: number
+          shards: number
+          user_id: string
+        }[]
+      }
       revoke_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"]; _user: string }
         Returns: undefined
